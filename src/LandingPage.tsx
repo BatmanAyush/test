@@ -3,10 +3,12 @@ import React,{ReactNode} from 'react'
  import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, useAnimation, useScroll } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { Button } from "@/components/ui/button"
-import {  Trees, School, Users, Dumbbell, Waves, Utensils, LandPlot, Gamepad, Heart, ChevronDown, ChevronLeft, ChevronRight,Menu } from 'lucide-react'
+import {  Trees, School, Users, Dumbbell, Waves, Utensils, LandPlot, Gamepad, Heart, ChevronDown, ChevronLeft, ChevronRight,Menu,Phone } from 'lucide-react'
 import photo from './builder.jpg'
 import logo from './Evershine Amavi logo-01.jpg'
+import desktopBanner from './Amavi_Web 2000x900 2-2-2.jpg'
+import mobileBanner from './Amavi_Mobile 500x800 2.jpg'
+import ContactPopup from './ContactUsPopup'
 // import jpg2 from './2.jpg'
 // import jp5 from './5.jpg'
 // import jpg1 from './image00001.jpeg'
@@ -102,6 +104,8 @@ const ConnectivityItem: React.FC<ConnectivityItemProps> = ({ title, items }) => 
 
 
 const LandingPage = () => {
+  const [isPopupOpen, setIsPopupOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const contactUsRef = useRef<HTMLElement>(null)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isHeaderVisible, setIsHeaderVisible] = useState(true)
@@ -124,6 +128,14 @@ const LandingPage = () => {
     })
   }, [scrollY])
   
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 820)
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -358,47 +370,21 @@ const LandingPage = () => {
         )}
       </motion.header>
 
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <img
-          src={photo}
+     <section className="relative h-screen flex items-center justify-center overflow-hidden">
+        <motion.img
+          src={isMobile ? mobileBanner : desktopBanner}
           alt="Evershine Amavi Project"
-          className="absolute inset-0 w-full h-full object-cover z-0"
+          className="absolute inset-0 w-full h-full object-fit z-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
         />
-        <div className="relative z-10 text-center text-white">
-          <motion.h1
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-5xl md:text-7xl font-bold mb-4 drop-shadow-lg"
-          >
-            Building Tomorrow's World
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-xl md:text-2xl mb-2 drop-shadow-md font-light"
-          >
-            Crafting Excellence in Every Structure
-          </motion.p>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="text-lg md:text-xl mb-8 drop-shadow-md max-w-2xl mx-auto"
-          >
-            From concept to completion, we bring your vision to life with precision and passion.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-          >
-            <Button size="lg" className="bg-[#FFD700] hover:bg-[#FFD700]/90 text-[#1A1A1A] font-semibold">
-              Explore Our Projects
-            </Button>
-          </motion.div>
-        </div>
+        {isMobile && (
+          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-4 z-10">
+            <h2 className="text-2xl font-bold mb-2">READY-TO-MOVE-IN, LARGE 1 & 2 BHKS</h2>
+            <p className="text-lg font-semibold">STARTING AT ₹ 41.50 LACS* ONWARDS</p>
+          </div>
+        )}
       </section>
 
       <section ref={aboutUsRef} className="py-20 px-4 md:px-0 bg-white">
@@ -594,6 +580,26 @@ estate developers.
           </div>
         </div>
       </footer>
+      {/* Contact buttons */}
+      <motion.button
+        className="fixed bottom-4 left-4 bg-[#1A1A1A] text-[#FFD700] px-4 py-2 rounded-md shadow-lg hover:bg-[#2A2A2A] transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:ring-opacity-50 z-50 font-semibold"
+        onClick={()=>{setIsPopupOpen(true)}}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        Download Brochure
+      </motion.button>
+      <motion.button
+        className="fixed bottom-4 right-4 bg-[#1A1A1A] text-[#FFD700] px-4 py-2 rounded-md shadow-lg hover:bg-[#2A2A2A] transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:ring-opacity-50 z-50 font-semibold"
+        onClick={() => setIsPopupOpen(true)}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        Enquire Now
+      </motion.button>
+
+      {/* Contact Popup */}
+      <ContactPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
     </div>
   )
 }
