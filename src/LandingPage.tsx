@@ -4,8 +4,9 @@ import React,{ReactNode} from 'react'
 import { motion, AnimatePresence, useAnimation, useScroll } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { Button } from "@/components/ui/button"
-import { Building2, Home, Hammer, Trees, School, Users, Dumbbell, Waves, Utensils, LandPlot, Gamepad, Heart, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
+import {  Trees, School, Users, Dumbbell, Waves, Utensils, LandPlot, Gamepad, Heart, ChevronDown, ChevronLeft, ChevronRight,Menu } from 'lucide-react'
 import photo from './builder.jpg'
+import logo from './Evershine Amavi logo-01.jpg'
 // import jpg2 from './2.jpg'
 // import jp5 from './5.jpg'
 // import jpg1 from './image00001.jpeg'
@@ -101,6 +102,8 @@ const ConnectivityItem: React.FC<ConnectivityItemProps> = ({ title, items }) => 
 
 
 const LandingPage = () => {
+  const contactUsRef = useRef<HTMLElement>(null)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isHeaderVisible, setIsHeaderVisible] = useState(true)
   const { scrollY } = useScroll()
   const aboutUsRef = useRef(null)
@@ -134,7 +137,10 @@ const LandingPage = () => {
     ref.current?.scrollIntoView({ behavior: 'smooth' })
   }
   
-
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
+  }
+  
   const amenities = [
     { name: "Yazo Park", icon: Trees },
     { name: "Cambridge International School", icon: School },
@@ -146,6 +152,14 @@ const LandingPage = () => {
     { name: "Yoga Center", icon: Heart },
     { name: "Board Games and Lot more!", icon: Gamepad }
   ]
+
+  const configurationData = [
+    { type: "1BHK", size: "395 sq ft" },
+    { type: "1BHK Premium", size: "435 sq ft" },
+    { type: "2BHK", size: "535 sq ft" },
+    { type: "2BHK Premium", size: "612 sq ft" },
+  ]
+
 
   const connectivityData = [
     {
@@ -269,8 +283,8 @@ const LandingPage = () => {
         transition={{ duration: 0.3 }}
       >
         <div className="container mx-auto px-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-[#FFD700]">Evershine Amavi</h1>
-          <nav>
+        <img src={logo} alt="Evershine Amavi Logo" className="h-12" />
+          <nav className="hidden md:block">
             <ul className="flex space-x-6">
               <li>
                 <button onClick={() => scrollToSection(aboutUsRef)} className="text-white hover:text-[#FFD700] transition-colors">
@@ -279,7 +293,7 @@ const LandingPage = () => {
               </li>
               <li>
                 <button onClick={() => scrollToSection(servicesRef)} className="text-white hover:text-[#FFD700] transition-colors">
-                  Our Services
+                 Configuration
                 </button>
               </li>
               <li>
@@ -292,9 +306,56 @@ const LandingPage = () => {
                   Connectivity
                 </button>
               </li>
+              <li>
+                <button onClick={() => scrollToSection(aboutUsRef)} className="text-white hover:text-[#FFD700] transition-colors">
+                  About Us
+                </button>
+              </li>
+              <li>
+    
+                <button onClick={() => scrollToSection(contactUsRef)} className="text-white hover:text-[#FFD700] transition-colors">
+                  Contact Us
+                </button>
+              </li>
             </ul>
           </nav>
+          <button className="md:hidden text-white" onClick={toggleMenu}>
+            <Menu />
+          </button>
         </div>
+        {isMenuOpen && (
+          <div className="md:hidden bg-black bg-opacity-90 py-4">
+            <ul className="flex flex-col items-center space-y-4">
+              <li>
+                <button onClick={() => { scrollToSection(aboutUsRef); toggleMenu(); }} className="text-white hover:text-[#FFD700] transition-colors">
+                  Overview
+                </button>
+              </li>
+             
+              <li>
+                <button onClick={() => { scrollToSection(amenitiesRef); toggleMenu(); }} className="text-white hover:text-[#FFD700] transition-colors">
+                  Amenities
+                </button>
+              </li>
+              <li>
+                <button onClick={() => { scrollToSection(connectivityRef); toggleMenu(); }} className="text-white hover:text-[#FFD700] transition-colors">
+                  Connectivity
+                </button>
+              </li>
+              <li>
+                <button onClick={() => { scrollToSection(aboutUsRef); toggleMenu(); }} className="text-white hover:text-[#FFD700] transition-colors">
+                  About Us
+                </button>
+              </li>
+
+              <li>
+                <button onClick={() => { scrollToSection(contactUsRef); toggleMenu(); }} className="text-white hover:text-[#FFD700] transition-colors">
+                  Contact Us
+                </button>
+              </li>
+            </ul>
+          </div>
+        )}
       </motion.header>
 
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -348,7 +409,10 @@ const LandingPage = () => {
           </AnimatedSection>
           <AnimatedSection delay={0.2}>
             <p className="text-center text-lg mb-12 text-[#4A4A4A] max-w-4xl mx-auto">
-              EVERSHINE VIRAR IS A PART OF LANDMARK CITY OF MODERN DAY VIRAR, GLOBAL CITY. IT'S A TOWNSHIP THAT HAS ALL  YOUR NEEDS AND DEMANDS COVERED. SO, WHETHER YOU WISH FOR THE BEST OF AMENITIES FOR THE INTERIORS, THE MOST EXCLUSIVE PERSONAL BENEFITS OR THE MOST AMAZING ACTIVITIES ACCESSIBLE TO  YOUR FAMILY, THIS IS THE PERFECT CHOICE.
+            Nestled within the expansive landscape of Global City, Amavi 303 is a private haven that
+combines serenity with luxury. Inspired by the Latin phrase "Veni, Vidi, Amavi" —
+meaning "I came, I saw, I loved" - Amavi 303 offers an escape from the chaos of city life,
+while still being surrounded by modern comforts and conveniences.
             </p>
           </AnimatedSection>
           <AnimatedSection delay={0.4}>
@@ -386,33 +450,26 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section ref={servicesRef} className="py-20 bg-[#1A1A1A] text-white">
-        <div className="container mx-auto px-4 md:px-0">
-          <AnimatedSection>
-            <h2 className="text-4xl font-bold text-center mb-12 text-[#FFD700]">Our Services</h2>
-          </AnimatedSection>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <AnimatedSection delay={0.2}>
-              <div className="bg-[#2A2A2A] p-6 rounded-lg shadow-lg transition-transform hover:scale-105">
-                <Building2 className="w-12 h-12 mb-4 text-[#FFD700]" />
-                <h3 className="text-xl font-semibold mb-2">Commercial Construction</h3>
-                <p>State-of-the-art office buildings, retail spaces, and industrial complexes.</p>
+      <section ref={servicesRef} className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img
+            src={photo}
+            alt="Background"
+            className="w-full h-full object-cover filter brightness-50"
+          />
+        </div>
+        <div className="container mx-auto px-4 md:px-0 relative z-10">
+          <h2 className="text-4xl font-bold text-center mb-12 text-white underline">Configuration</h2>
+          <div className="flex flex-wrap justify-center gap-8">
+            {configurationData.map((config, index) => (
+              <div
+                key={index}
+                className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg p-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 w-64"
+              >
+                <h3 className="text-2xl font-bold mb-2 text-[#FFD700]">{config.type}</h3>
+                <p className="text-lg text-white">{config.size}</p>
               </div>
-            </AnimatedSection>
-            <AnimatedSection delay={0.4}>
-              <div className="bg-[#2A2A2A] p-6 rounded-lg shadow-lg transition-transform hover:scale-105">
-                <Home className="w-12 h-12 mb-4 text-[#FFD700]" />
-                <h3 className="text-xl font-semibold mb-2">Residential Projects</h3>
-                <p>Custom homes, apartments, and planned communities tailored to modern living.</p>
-              </div>
-            </AnimatedSection>
-            <AnimatedSection delay={0.6}>
-              <div className="bg-[#2A2A2A] p-6 rounded-lg shadow-lg transition-transform hover:scale-105">
-                <Hammer className="w-12 h-12 mb-4 text-[#FFD700]" />
-                <h3 className="text-xl font-semibold mb-2">Renovation & Restoration</h3>
-                <p>Breathing new life into existing structures while preserving their character.</p>
-              </div>
-            </AnimatedSection>
+            ))}
           </div>
         </div>
       </section>
@@ -469,6 +526,63 @@ const LandingPage = () => {
                 </div>
               </AnimatedSection>
             </div>
+          </div>
+        </div>
+      </section>
+      <section ref={aboutUsRef} className="py-20 px-4 md:px-0 bg-gray-100">
+        <div className="container mx-auto">
+       
+            <h2 className="text-4xl font-bold text-center mb-8 text-[#1A1A1A]">ABOUT US</h2>
+     
+  
+            <div className="max-w-3xl mx-auto text-center">
+              <p className="text-lg mb-6 text-[#4A4A4A]">
+              Founded in 1960, Evershine Group has established a legacy of values through the creation of
+infrastructure. For over six decades, we have aimed to exceed our promises by delivering more than
+what we commit. We have focused on offering middle-income families an aspirational lifestyle, with
+homes designed to blend nature with modern living. Our developments are rich in greenery and feature
+an array of lifestyle and recreational amenities, making us one of Mumbai’s most trusted and leading real
+estate developers.
+              </p>
+              
+            </div>
+       
+        </div>
+      </section>
+
+
+     
+      <section ref={contactUsRef} className="py-20 px-4 md:px-0 bg-gradient-to-b from-[#1A1A1A] to-[#2A2A2A] text-white">
+        <div className="container mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-4 text-[#FFD700]">Contact Us</h2>
+          <p className="text-center text-lg mb-12 max-w-2xl mx-auto">
+            Get in touch with us to learn more about our projects or to schedule a visit to our sample flat.
+          </p>
+          <div className="max-w-md mx-auto bg-[#2A2A2A] p-8 rounded-lg shadow-lg border border-[#FFD700]/30">
+            <form className="space-y-4">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-[#FFD700]">Name</label>
+                <input type="text" id="name" name="name" className="mt-1 block w-full rounded-md bg-[#3A3A3A] border-gray-600 text-white shadow-sm focus:border-[#FFD700] focus:ring focus:ring-[#FFD700] focus:ring-opacity-50" required />
+              </div>
+              <div>
+                <label htmlFor="mobile" className="block text-sm font-medium text-[#FFD700]">Mobile</label>
+                <input type="tel" id="mobile" name="mobile" className="mt-1 block w-full rounded-md bg-[#3A3A3A] border-gray-600 text-white shadow-sm focus:border-[#FFD700] focus:ring focus:ring-[#FFD700] focus:ring-opacity-50" required />
+              </div>
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-[#FFD700]">Email</label>
+                <input type="email" id="email" name="email" className="mt-1 block w-full rounded-md bg-[#3A3A3A] border-gray-600 text-white shadow-sm focus:border-[#FFD700] focus:ring focus:ring-[#FFD700] focus:ring-opacity-50" required />
+              </div>
+              <div>
+                <button type="submit" className="w-full bg-[#FFD700] text-[#1A1A1A] py-2 px-4 rounded-md font-semibold hover:bg-[#FFD700]/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:ring-opacity-50">
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+          <div className="mt-12 text-center">
+            <p className="text-lg font-semibold mb-2">Site Address</p>
+            <p className="text-[#FFD700] mt-1 mb-3">Evershine Global City, Avenue I1, Virar (West), Maharashtra 401303</p>
+            <p>+91 8828309719 / +91 9096669171</p>
           </div>
         </div>
       </section>
