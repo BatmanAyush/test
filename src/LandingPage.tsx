@@ -1,19 +1,19 @@
 'use client'
-
-import React, { useState, useEffect, useRef } from 'react'
-import { motion, useAnimation, useScroll } from 'framer-motion'
+import React,{ReactNode} from 'react'
+ import { useState, useEffect, useRef } from 'react'
+import { motion, AnimatePresence, useAnimation, useScroll } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { Button } from "@/components/ui/button"
-import { Building2, Home, Hammer, Trees, School, Users, Dumbbell, Waves, Utensils, LandPlot, Gamepad, Heart, ChevronDown } from 'lucide-react'
+import { Building2, Home, Hammer, Trees, School, Users, Dumbbell, Waves, Utensils, LandPlot, Gamepad, Heart, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
 import photo from './builder.jpg'
-import jpg5 from './5.jpg'
-import jp4 from './image00001.jpeg'
-import jpg2 from './image00002.jpeg'
-import jp3 from './2.jpg'
+// import jpg2 from './2.jpg'
+// import jp5 from './5.jpg'
+// import jpg1 from './image00001.jpeg'
+// import jpg3 from './image00002.jpeg'
+import GallerySection from './GallerySection'
 
-// Define types for AnimatedSection props
 interface AnimatedSectionProps {
-  children: React.ReactNode
+  children: ReactNode
   delay?: number
 }
 
@@ -46,14 +46,15 @@ const AnimatedSection: React.FC<AnimatedSectionProps> = ({ children, delay = 0 }
   )
 }
 
-// Define types for ConnectivityItem props
+interface Item {
+  name: string
+  distance: string
+  time: string
+}
+
 interface ConnectivityItemProps {
   title: string
-  items: {
-    name: string
-    distance: string
-    time: string
-  }[]
+  items: Item[]
 }
 
 const ConnectivityItem: React.FC<ConnectivityItemProps> = ({ title, items }) => {
@@ -98,17 +99,20 @@ const ConnectivityItem: React.FC<ConnectivityItemProps> = ({ title, items }) => 
   )
 }
 
-const LandingPage: React.FC = () => {
+
+const LandingPage = () => {
   const [isHeaderVisible, setIsHeaderVisible] = useState(true)
   const { scrollY } = useScroll()
-  const aboutUsRef = useRef<HTMLElement>(null)
-  const servicesRef = useRef<HTMLElement>(null)
-  const amenitiesRef = useRef<HTMLElement>(null)
-  const connectivityRef = useRef<HTMLElement>(null)
+  const aboutUsRef = useRef(null)
+  const servicesRef = useRef(null)
+  const amenitiesRef = useRef(null)
+  const connectivityRef = useRef(null)
+  const [currentOverviewSlide, setCurrentOverviewSlide] = useState(0)
+  const [direction, setDirection] = useState(0)
 
   useEffect(() => {
     return scrollY.onChange((latest) => {
-      const previous = scrollY.getPrevious() || 0
+      const previous = scrollY.getPrevious() ?? 0 // Use nullish coalescing to handle undefined
       if (latest > previous && latest > 100) {
         setIsHeaderVisible(false)
       } else {
@@ -116,10 +120,20 @@ const LandingPage: React.FC = () => {
       }
     })
   }, [scrollY])
+  
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      nextSlide()
+    }, 5000) // Switch every 5 seconds
+
+    return () => clearInterval(timer)
+  }, [])
 
   const scrollToSection = (ref: React.RefObject<HTMLElement>) => {
     ref.current?.scrollIntoView({ behavior: 'smooth' })
   }
+  
 
   const amenities = [
     { name: "Yazo Park", icon: Trees },
@@ -207,21 +221,60 @@ const LandingPage: React.FC = () => {
     },
   ]
 
+  const overviewSlides = [
+    { title: "33 Acre Land Parcel", description: "Expansive land area for comprehensive development" },
+    { title: "12.5 Acres Sports Stadia", description: "State-of-the-art sports facilities for residents" },
+    { title: "Luxury Apartments", description: "Opulent living spaces with modern amenities" },
+  ]
+
+  const nextSlide = () => {
+    setDirection(1)
+    setCurrentOverviewSlide((prev) => (prev === overviewSlides.length - 1 ? 0 : prev + 1))
+  }
+
+  const prevSlide = () => {
+    setDirection(-1)
+    setCurrentOverviewSlide((prev) => (prev === 0 ? overviewSlides.length - 1 : prev - 1))
+  }
+
+  const slideVariants = {
+    hidden: (direction: number) => ({
+      x: direction > 0 ? 300 : -300,
+      opacity: 0,
+    }),
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: {
+        x: { type: 'spring', stiffness: 300, damping: 30 },
+        opacity: { duration: 0.2 },
+      },
+    },
+    exit: (direction: number) => ({
+      x: direction > 0 ? -300 : 300,
+      opacity: 0,
+      transition: {
+        x: { type: 'spring', stiffness: 300, damping: 30 },
+        opacity: { duration: 0.2 },
+      },
+    }),
+  }
+  
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#FFF8E1] to-white font-sans">
       <motion.header
-        className="fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 text-white py-4"
+        className="fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-70 text-white py-4"
         initial={{ opacity: 1, y: 0 }}
         animate={{ opacity: isHeaderVisible ? 1 : 0, y: isHeaderVisible ? 0 : -100 }}
         transition={{ duration: 0.3 }}
       >
         <div className="container mx-auto px-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Evershine Amavi</h1>
+          <h1 className="text-2xl font-bold text-[#FFD700]">Evershine Amavi</h1>
           <nav>
-            <ul className="flex space-x-4">
+            <ul className="flex space-x-6">
               <li>
                 <button onClick={() => scrollToSection(aboutUsRef)} className="text-white hover:text-[#FFD700] transition-colors">
-                  About Us
+                  Overview
                 </button>
               </li>
               <li>
@@ -244,7 +297,6 @@ const LandingPage: React.FC = () => {
         </div>
       </motion.header>
 
-      {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <img
           src={photo}
@@ -288,61 +340,60 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* About Us Section */}
-      <section ref={aboutUsRef} className="py-20 px-4 md:px-0">
+      <section ref={aboutUsRef} className="py-20 px-4 md:px-0 bg-white">
         <div className="container mx-auto">
           <AnimatedSection>
-            <h2 className="text-4xl font-bold text-center mb-4 text-[#1A1A1A] underline">About Us</h2>
-            <p className="text-center text-lg mb-12 text-[#4A4A4A] font-light">Transforming skylines and communities</p>
+            <h2 className="text-4xl font-bold text-center mb-4 text-[#1A1A1A]">OVERVIEW</h2>
+            <div className="w-24 h-1 bg-[#FFD700] mx-auto mb-8"></div>
           </AnimatedSection>
-          <div className="flex flex-col gap-12">
-            <AnimatedSection delay={0.2}>
-              <div className="flex flex-col md:flex-row gap-8">
-                <div className="md:w-1/2">
-                  <img
-                    src={jpg5}
-                    alt="Our Values"
-                    className="rounded-lg shadow-2xl w-full h-96 object-cover"
-                  />
-                </div>
-                <div className="md:w-1/2">
-                  <h3 className="text-2xl font-semibold mb-4 text-[#1A1A1A]">Our Values</h3>
-                  <p className="text-lg text-[#1A1A1A]">
-                    At Evershine Amavi, we believe in integrity, innovation, and sustainability. Our core values drive us to create spaces that not only meet but exceed expectations, fostering communities and enriching lives.
-                  </p>
-                </div>
+          <AnimatedSection delay={0.2}>
+            <p className="text-center text-lg mb-12 text-[#4A4A4A] max-w-4xl mx-auto">
+              EVERSHINE VIRAR IS A PART OF LANDMARK CITY OF MODERN DAY VIRAR, GLOBAL CITY. IT'S A TOWNSHIP THAT HAS ALL  YOUR NEEDS AND DEMANDS COVERED. SO, WHETHER YOU WISH FOR THE BEST OF AMENITIES FOR THE INTERIORS, THE MOST EXCLUSIVE PERSONAL BENEFITS OR THE MOST AMAZING ACTIVITIES ACCESSIBLE TO  YOUR FAMILY, THIS IS THE PERFECT CHOICE.
+            </p>
+          </AnimatedSection>
+          <AnimatedSection delay={0.4}>
+            <div className="relative mt-12 bg-[#F0F0F0] rounded-lg shadow-lg p-8 h-[300px]">
+              <AnimatePresence initial={false} custom={direction} mode="wait">
+                <motion.div
+                  key={currentOverviewSlide}
+                  custom={direction}
+                  variants={slideVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  className="absolute inset-0 flex flex-col justify-center items-center p-8"
+                >
+                  <h3 className="text-2xl font-bold mb-4 text-[#1A1A1A]">{overviewSlides[currentOverviewSlide].title}</h3>
+                  <p className="text-[#4A4A4A] text-lg text-center">{overviewSlides[currentOverviewSlide].description}</p>
+                </motion.div>
+              </AnimatePresence>
+              <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-4">
+                <button 
+                  className="bg-[#FFD700] text-[#1A1A1A] px-4 py-2 rounded-full shadow-md hover:bg-[#FFD700]/80 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:ring-opacity-50"
+                  onClick={prevSlide}
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+                <button 
+                  className="bg-[#FFD700] text-[#1A1A1A] px-4 py-2 rounded-full shadow-md hover:bg-[#FFD700]/80 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:ring-opacity-50"
+                  onClick={nextSlide}
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
               </div>
-            </AnimatedSection>
-            <AnimatedSection delay={0.4}>
-              <div className="flex flex-col md:flex-row gap-8">
-                <div className="md:w-1/2 md:order-2">
-                  <img
-                    src={jp4}
-                    alt="Our Mission"
-                    className="rounded-lg shadow-2xl w-full h-96 object-cover"
-                  />
-                </div>
-                <div className="md:w-1/2 md:order-1">
-                  <h3 className="text-2xl font-semibold mb-4 text-[#1A1A1A]">Our Mission</h3>
-                  <p className="text-lg text-[#1A1A1A]">
-                    Our mission is to redefine urban living through innovative design, superior craftsmanship, and unwavering commitment to quality. We aim to create spaces that inspire, endure, and elevate the quality of life for our residents.
-                  </p>
-                </div>
-              </div>
-            </AnimatedSection>
-          </div>
+            </div>
+          </AnimatedSection>
         </div>
       </section>
 
-      {/* Our Services Section */}
       <section ref={servicesRef} className="py-20 bg-[#1A1A1A] text-white">
         <div className="container mx-auto px-4 md:px-0">
           <AnimatedSection>
-            <h2 className="text-4xl font-bold text-center mb-12">Our Services</h2>
+            <h2 className="text-4xl font-bold text-center mb-12 text-[#FFD700]">Our Services</h2>
           </AnimatedSection>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <AnimatedSection delay={0.2}>
-              <div className="bg-[#2A2A2A] p-6 rounded-lg shadow-lg transition-transform  hover:scale-105">
+              <div className="bg-[#2A2A2A] p-6 rounded-lg shadow-lg transition-transform hover:scale-105">
                 <Building2 className="w-12 h-12 mb-4 text-[#FFD700]" />
                 <h3 className="text-xl font-semibold mb-2">Commercial Construction</h3>
                 <p>State-of-the-art office buildings, retail spaces, and industrial complexes.</p>
@@ -366,56 +417,12 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Crafted to Excellence Section */}
-      <section className="py-20 px-4 md:px-0 bg-white">
-        <div className="container mx-auto">
-          <AnimatedSection>
-            <h2 className="text-4xl font-bold text-center mb-12 text-[#1A1A1A]">Crafted to Excellence</h2>
-          </AnimatedSection>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <AnimatedSection delay={0.2}>
-              <div>
-                <img
-                  src={jpg2}
-                  alt="Building Features"
-                  className="rounded-lg shadow-2xl w-full h-96 object-cover mb-6"
-                />
-                <h3 className="text-2xl font-semibold mb-4 text-[#1A1A1A]">Building Features</h3>
-                <ul className="list-disc list-inside text-[#1A1A1A]">
-                  <li><span className="font-semibold">Spacious and premium finish</span> in all common areas</li>
-                  <li><span className="font-semibold">High-speed elevators</span> for efficient vertical transportation</li>
-                  <li><span className="font-semibold">Vitrified tile floors</span> in lobbies and corridors</li>
-                  <li><span className="font-semibold">24/7 security</span> with CCTV surveillance</li>
-                  <li><span className="font-semibold">Landscaped gardens</span> and recreational areas</li>
-                </ul>
-              </div>
-            </AnimatedSection>
-            <AnimatedSection delay={0.4}>
-              <div>
-                <img
-                  src={jp3}
-                  alt="Apartment Features"
-                  className="rounded-lg shadow-2xl w-full h-96 object-cover mb-6"
-                />
-                <h3 className="text-2xl font-semibold mb-4 text-[#1A1A1A]">Apartment Features</h3>
-                <ul className="list-disc list-inside text-[#1A1A1A]">
-                  <li><span className="font-semibold">Spacious, well-designed apartments</span> with optimal natural light</li>
-                  <li><span className="font-semibold">In-built inverters</span> for uninterrupted power supply</li>
-                  <li><span className="font-semibold">Pre-installed video door phones</span> for enhanced security</li>
-                  <li><span className="font-semibold">Premium sanitary fittings</span> and modern kitchen appliances</li>
-                  <li><span className="font-semibold">Energy-efficient</span> lighting and air conditioning systems</li>
-                </ul>
-              </div>
-            </AnimatedSection>
-          </div>
-        </div>
-      </section>
+<GallerySection/>
 
-      {/* Amenities Section */}
       <section ref={amenitiesRef} className="py-20 px-4 md:px-0 bg-[#FFF8E1]">
         <div className="container mx-auto">
           <AnimatedSection>
-            <h2 className="text-4xl font-bold text-center mb-12 text-[#1A1A1A] underline">Amenities</h2>
+            <h2 className="text-4xl font-bold text-center mb-12 text-[#1A1A1A]">Amenities</h2>
           </AnimatedSection>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {amenities.map((amenity, index) => (
@@ -432,11 +439,10 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Connectivity Section */}
       <section ref={connectivityRef} className="py-20 px-4 md:px-0 bg-gradient-to-b from-white to-[#FFF8E1]">
         <div className="container mx-auto">
           <AnimatedSection>
-            <h2 className="text-4xl font-bold text-center mb-12 text-[#1A1A1A] underline">Connectivity</h2>
+            <h2 className="text-4xl font-bold text-center mb-12 text-[#1A1A1A]">Connectivity</h2>
           </AnimatedSection>
           <div className="flex flex-col md:flex-row gap-8">
             <div className="md:w-1/2 bg-white p-6 rounded-lg shadow-lg">
@@ -467,7 +473,6 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-[#1A1A1A] text-white py-8">
         <div className="container mx-auto px-4 md:px-0">
           <div className="text-center">
