@@ -11,7 +11,9 @@ import desktopBanner from './11zon_resized.jpg'
 import mobileBanner from './Amavi_Mobile 500x800 1.jpg'
 import ContactPopup from './ContactUsPopup'
 import GallerySection from './GallerySection'
-
+import qrCode1 from './Eevershine-Amavi-Phase-1.webp'
+import qrCode2 from './Eevershine-Amavi-Phase-2.webp'
+import qrCode3 from './Eevershine-Amavi-Phase-3.webp'
 interface AnimatedSectionProps {
   children: ReactNode
   delay?: number
@@ -58,7 +60,7 @@ interface ConnectivityItemProps {
 }
 
 const ConnectivityItem: React.FC<ConnectivityItemProps> = ({ title, items }) => {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(true)
 
   return (
     <div className="mb-4 border-b border-[#FFD700]/30 pb-2">
@@ -580,13 +582,42 @@ const LandingPage = () => {
         </div>
       </section>
 
+   
       <footer className="bg-[#1A1A1A] text-white py-8">
-        <div className="container mx-auto px-4 md:px-0">
-          <div className="text-center">
-            <p>&copy; {new Date().getFullYear()} Evershine Amavi. All rights reserved.</p>
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+            <div className="flex space-x-4">
+              <div className="flex flex-col items-center">
+                <img src={qrCode1} alt="Evershine Amavi Phase 1 QR Code" className="w-20 h-20" />
+                <p className="mt-1 text-xs">Phase 1</p>
+              </div>
+              <div className="flex flex-col items-center">
+                <img src={qrCode2} alt="Evershine Amavi Phase 2 QR Code" className="w-20 h-20" />
+                <p className="mt-1 text-xs">Phase 2</p>
+              </div>
+              <div className="flex flex-col items-center">
+                <img src={qrCode3} alt="Evershine Amavi Phase 3 QR Code" className="w-20 h-20" />
+                <p className="mt-1 text-xs">Phase 3</p>
+              </div>
+            </div>
+            <div className="text-center md:text-left max-w-md">
+              <p className="text-sm">
+                MahaRERA No.: P51800056477 and is available on the website https://maharera.mahaonline.gov.in under registered projects | *T&C Apply.
+              </p>
+              <button
+                className="mt-2 text-sm underline cursor-pointer hover:text-[#FFD700] transition-colors"
+                onClick={() => openPopup('Disclaimer')}
+              >
+                Disclaimer
+              </button>
+            </div>
+          </div>
+          <div className="mt-6 text-center">
+            <p className="text-sm">&copy; {new Date().getFullYear()} Evershine Amavi. All rights reserved.</p>
           </div>
         </div>
       </footer>
+
 
       {/* Contact buttons */}
       <motion.button
