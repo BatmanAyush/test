@@ -101,7 +101,7 @@ const ConnectivityItem: React.FC<ConnectivityItemProps> = ({ title, items }) => 
 
 const LandingPage = () => {
   const [popupTitle, setPopupTitle] = useState('')
-  const [isPopupOpen, setIsPopupOpen] = useState(false)
+  const [isPopupOpen, setIsPopupOpen] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
   const contactUsRef = useRef<HTMLElement>(null)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
