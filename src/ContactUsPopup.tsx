@@ -5,9 +5,10 @@ import { X } from 'lucide-react'
 interface ContactPopupProps {
   isOpen: boolean
   onClose: () => void
+  title: string
 }
 
-const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose }) => {
+const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose, title }) => {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -29,7 +30,7 @@ const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose }) => {
             >
               <X size={24} />
             </button>
-            <h2 className="text-3xl font-bold text-center mb-6 text-[#FFD700]">Contact Now</h2>
+            <h2 className="text-3xl font-bold text-center mb-6 text-[#FFD700]">{title}</h2>
             <form className="space-y-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-[#FFD700]">Name</label>

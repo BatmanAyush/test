@@ -1,18 +1,15 @@
 'use client'
-import React,{ReactNode} from 'react'
- import { useState, useEffect, useRef } from 'react'
+
+import React, { ReactNode, useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, useAnimation, useScroll } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import {  Trees, School, Users, Dumbbell, Waves, Utensils, LandPlot, Gamepad, Heart, ChevronDown, ChevronLeft, ChevronRight,Menu,Phone } from 'lucide-react'
+import { Trees, School, Users, Dumbbell, Waves, Utensils, LandPlot, Gamepad, Heart, ChevronDown, ChevronLeft, ChevronRight, Menu } from 'lucide-react'
 import photo from './builder.jpg'
-import logo from './Evershine Amavi logo-01.jpg'
-import desktopBanner from './Amavi_Web 2000x900 2-2-2.jpg'
-import mobileBanner from './Amavi_Mobile 500x800 2.jpg'
+import logo from './Evershine Builder logo 1200x1200-01(2).png'
+import logo2 from './Evershine Builder logo 1200x1200-01.jpg' // Added import for logo2
+import desktopBanner from './11zon_resized.jpg'
+import mobileBanner from './Amavi_Mobile 500x800 1.jpg'
 import ContactPopup from './ContactUsPopup'
-// import jpg2 from './2.jpg'
-// import jp5 from './5.jpg'
-// import jpg1 from './image00001.jpeg'
-// import jpg3 from './image00002.jpeg'
 import GallerySection from './GallerySection'
 
 interface AnimatedSectionProps {
@@ -102,8 +99,8 @@ const ConnectivityItem: React.FC<ConnectivityItemProps> = ({ title, items }) => 
   )
 }
 
-
 const LandingPage = () => {
+  const [popupTitle, setPopupTitle] = useState('')
   const [isPopupOpen, setIsPopupOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const contactUsRef = useRef<HTMLElement>(null)
@@ -111,6 +108,7 @@ const LandingPage = () => {
   const [isHeaderVisible, setIsHeaderVisible] = useState(true)
   const { scrollY } = useScroll()
   const aboutUsRef = useRef(null)
+  const overviewRef = useRef<HTMLElement>(null)
   const servicesRef = useRef(null)
   const amenitiesRef = useRef(null)
   const connectivityRef = useRef(null)
@@ -119,7 +117,7 @@ const LandingPage = () => {
 
   useEffect(() => {
     return scrollY.onChange((latest) => {
-      const previous = scrollY.getPrevious() ?? 0 // Use nullish coalescing to handle undefined
+      const previous = scrollY.getPrevious() ?? 0
       if (latest > previous && latest > 100) {
         setIsHeaderVisible(false)
       } else {
@@ -127,7 +125,7 @@ const LandingPage = () => {
       }
     })
   }, [scrollY])
-  
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 820)
@@ -140,7 +138,7 @@ const LandingPage = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       nextSlide()
-    }, 5000) // Switch every 5 seconds
+    }, 5000)
 
     return () => clearInterval(timer)
   }, [])
@@ -148,11 +146,16 @@ const LandingPage = () => {
   const scrollToSection = (ref: React.RefObject<HTMLElement>) => {
     ref.current?.scrollIntoView({ behavior: 'smooth' })
   }
-  
+
+  const openPopup = (title: string) => {
+    setPopupTitle(title)
+    setIsPopupOpen(true)
+  }
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
   }
-  
+
   const amenities = [
     { name: "Yazo Park", icon: Trees },
     { name: "Cambridge International School", icon: School },
@@ -171,7 +174,6 @@ const LandingPage = () => {
     { type: "2BHK", size: "535 sq ft" },
     { type: "2BHK Premium", size: "612 sq ft" },
   ]
-
 
   const connectivityData = [
     {
@@ -285,7 +287,7 @@ const LandingPage = () => {
       },
     }),
   }
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#FFF8E1] to-white font-sans">
       <motion.header
@@ -295,17 +297,20 @@ const LandingPage = () => {
         transition={{ duration: 0.3 }}
       >
         <div className="container mx-auto px-4 flex justify-between items-center">
-        <img src={logo} alt="Evershine Amavi Logo" className="h-12" />
+          <img src={logo2} alt="Evershine Amavi Logo" className="h-20" />
           <nav className="hidden md:block">
-            <ul className="flex space-x-6">
+            <ul className="flex space-x-6 items-center">
               <li>
-                <button onClick={() => scrollToSection(aboutUsRef)} className="text-white hover:text-[#FFD700] transition-colors">
+                <img src={logo} alt="Evershine Amavi Logo" className="h-16" />
+              </li>
+              <li>
+                <button onClick={() => scrollToSection(overviewRef)} className="text-white hover:text-[#FFD700] transition-colors">
                   Overview
                 </button>
               </li>
               <li>
                 <button onClick={() => scrollToSection(servicesRef)} className="text-white hover:text-[#FFD700] transition-colors">
-                 Configuration
+                  Configuration
                 </button>
               </li>
               <li>
@@ -324,7 +329,6 @@ const LandingPage = () => {
                 </button>
               </li>
               <li>
-    
                 <button onClick={() => scrollToSection(contactUsRef)} className="text-white hover:text-[#FFD700] transition-colors">
                   Contact Us
                 </button>
@@ -339,11 +343,13 @@ const LandingPage = () => {
           <div className="md:hidden bg-black bg-opacity-90 py-4">
             <ul className="flex flex-col items-center space-y-4">
               <li>
+                <img src={logo} alt="Evershine Amavi Logo" className="h-16 mb-4" />
+              </li>
+              <li>
                 <button onClick={() => { scrollToSection(aboutUsRef); toggleMenu(); }} className="text-white hover:text-[#FFD700] transition-colors">
                   Overview
                 </button>
               </li>
-             
               <li>
                 <button onClick={() => { scrollToSection(amenitiesRef); toggleMenu(); }} className="text-white hover:text-[#FFD700] transition-colors">
                   Amenities
@@ -353,13 +359,13 @@ const LandingPage = () => {
                 <button onClick={() => { scrollToSection(connectivityRef); toggleMenu(); }} className="text-white hover:text-[#FFD700] transition-colors">
                   Connectivity
                 </button>
+
               </li>
               <li>
                 <button onClick={() => { scrollToSection(aboutUsRef); toggleMenu(); }} className="text-white hover:text-[#FFD700] transition-colors">
                   About Us
                 </button>
               </li>
-
               <li>
                 <button onClick={() => { scrollToSection(contactUsRef); toggleMenu(); }} className="text-white hover:text-[#FFD700] transition-colors">
                   Contact Us
@@ -370,7 +376,7 @@ const LandingPage = () => {
         )}
       </motion.header>
 
-     <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <motion.img
           src={isMobile ? mobileBanner : desktopBanner}
           alt="Evershine Amavi Project"
@@ -387,7 +393,7 @@ const LandingPage = () => {
         )}
       </section>
 
-      <section ref={aboutUsRef} className="py-20 px-4 md:px-0 bg-white">
+      <section ref={overviewRef} className="py-20 px-4 md:px-0 bg-white">
         <div className="container mx-auto">
           <AnimatedSection>
             <h2 className="text-4xl font-bold text-center mb-4 text-[#1A1A1A]">OVERVIEW</h2>
@@ -395,10 +401,10 @@ const LandingPage = () => {
           </AnimatedSection>
           <AnimatedSection delay={0.2}>
             <p className="text-center text-lg mb-12 text-[#4A4A4A] max-w-4xl mx-auto">
-            Nestled within the expansive landscape of Global City, Amavi 303 is a private haven that
-combines serenity with luxury. Inspired by the Latin phrase "Veni, Vidi, Amavi" —
-meaning "I came, I saw, I loved" - Amavi 303 offers an escape from the chaos of city life,
-while still being surrounded by modern comforts and conveniences.
+              Nestled within the expansive landscape of Global City, Amavi 303 is a private haven that
+              combines serenity with luxury. Inspired by the Latin phrase "Veni, Vidi, Amavi" —
+              meaning "I came, I saw, I loved" - Amavi 303 offers an escape from the chaos of city life,
+              while still being surrounded by modern comforts and conveniences.
             </p>
           </AnimatedSection>
           <AnimatedSection delay={0.4}>
@@ -418,13 +424,13 @@ while still being surrounded by modern comforts and conveniences.
                 </motion.div>
               </AnimatePresence>
               <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-4">
-                <button 
+                <button
                   className="bg-[#FFD700] text-[#1A1A1A] px-4 py-2 rounded-full shadow-md hover:bg-[#FFD700]/80 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:ring-opacity-50"
                   onClick={prevSlide}
                 >
                   <ChevronLeft className="w-6 h-6" />
                 </button>
-                <button 
+                <button
                   className="bg-[#FFD700] text-[#1A1A1A] px-4 py-2 rounded-full shadow-md hover:bg-[#FFD700]/80 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:ring-opacity-50"
                   onClick={nextSlide}
                 >
@@ -447,20 +453,27 @@ while still being surrounded by modern comforts and conveniences.
         <div className="container mx-auto px-4 md:px-0 relative z-10">
           <h2 className="text-4xl font-bold text-center mb-12 text-white underline">Configuration</h2>
           <div className="flex flex-wrap justify-center gap-8">
-            {configurationData.map((config, index) => (
-              <div
-                key={index}
-                className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg p-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 w-64"
+          {configurationData.map((config, index) => (
+            <div
+              key={index}
+              className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg p-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 w-64"
+            >
+              <h3 className="text-2xl font-bold mb-2 text-[#FFD700]">{config.type}</h3>
+              <p className="text-lg text-white mb-4">{config.size}</p>
+              <button
+                onClick={() => openPopup('Check Price')}
+                className="w-full bg-[#FFD700] text-[#1A1A1A] py-2 px-4 rounded-md font-semibold hover:bg-[#FFD700]/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:ring-opacity-50"
               >
-                <h3 className="text-2xl font-bold mb-2 text-[#FFD700]">{config.type}</h3>
-                <p className="text-lg text-white">{config.size}</p>
-              </div>
-            ))}
+                Check Price
+              </button>
+            </div>
+          ))}
+
           </div>
         </div>
       </section>
 
-<GallerySection/>
+      <GallerySection />
 
       <section ref={amenitiesRef} className="py-20 px-4 md:px-0 bg-[#FFF8E1]">
         <div className="container mx-auto">
@@ -471,7 +484,7 @@ while still being surrounded by modern comforts and conveniences.
             {amenities.map((amenity, index) => (
               <AnimatedSection key={amenity.name} delay={0.2 * (index + 1)}>
                 <div className="bg-white p-6 rounded-lg shadow-lg transition-transform hover:scale-105">
-                  {React.createElement(amenity.icon, { 
+                  {React.createElement(amenity.icon, {
                     className: "w-12 h-12 mb-4 text-[#FFD700]"
                   })}
                   <h3 className="text-xl font-semibold mb-2 text-[#1A1A1A]">{amenity.name}</h3>
@@ -515,29 +528,23 @@ while still being surrounded by modern comforts and conveniences.
           </div>
         </div>
       </section>
+
       <section ref={aboutUsRef} className="py-20 px-4 md:px-0 bg-gray-100">
         <div className="container mx-auto">
-       
-            <h2 className="text-4xl font-bold text-center mb-8 text-[#1A1A1A]">ABOUT US</h2>
-     
-  
-            <div className="max-w-3xl mx-auto text-center">
-              <p className="text-lg mb-6 text-[#4A4A4A]">
+          <h2 className="text-4xl font-bold text-center mb-8 text-[#1A1A1A]">ABOUT US</h2>
+          <div className="max-w-3xl mx-auto text-center">
+            <p className="text-lg mb-6 text-[#4A4A4A]">
               Founded in 1960, Evershine Group has established a legacy of values through the creation of
-infrastructure. For over six decades, we have aimed to exceed our promises by delivering more than
-what we commit. We have focused on offering middle-income families an aspirational lifestyle, with
-homes designed to blend nature with modern living. Our developments are rich in greenery and feature
-an array of lifestyle and recreational amenities, making us one of Mumbai’s most trusted and leading real
-estate developers.
-              </p>
-              
-            </div>
-       
+              infrastructure. For over six decades, we have aimed to exceed our promises by delivering more than
+              what we commit. We have focused on offering middle-income families an aspirational lifestyle, with
+              homes designed to blend nature with modern living. Our developments are rich in greenery and feature
+              an array of lifestyle and recreational amenities, making us one of Mumbai's most trusted and leading real
+              estate developers.
+            </p>
+          </div>
         </div>
       </section>
 
-
-     
       <section ref={contactUsRef} className="py-20 px-4 md:px-0 bg-gradient-to-b from-[#1A1A1A] to-[#2A2A2A] text-white">
         <div className="container mx-auto">
           <h2 className="text-4xl font-bold text-center mb-4 text-[#FFD700]">Contact Us</h2>
@@ -580,10 +587,11 @@ estate developers.
           </div>
         </div>
       </footer>
+
       {/* Contact buttons */}
       <motion.button
         className="fixed bottom-4 left-4 bg-[#1A1A1A] text-[#FFD700] px-4 py-2 rounded-md shadow-lg hover:bg-[#2A2A2A] transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:ring-opacity-50 z-50 font-semibold"
-        onClick={()=>{setIsPopupOpen(true)}}
+        onClick={() => openPopup('Download Brochure')}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -591,7 +599,7 @@ estate developers.
       </motion.button>
       <motion.button
         className="fixed bottom-4 right-4 bg-[#1A1A1A] text-[#FFD700] px-4 py-2 rounded-md shadow-lg hover:bg-[#2A2A2A] transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:ring-opacity-50 z-50 font-semibold"
-        onClick={() => setIsPopupOpen(true)}
+        onClick={() => openPopup('Enquire Now')}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -599,7 +607,7 @@ estate developers.
       </motion.button>
 
       {/* Contact Popup */}
-      <ContactPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
+      <ContactPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} title={popupTitle} />
     </div>
   )
 }
