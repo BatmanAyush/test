@@ -60,7 +60,7 @@ interface ConnectivityItemProps {
 }
 
 const ConnectivityItem: React.FC<ConnectivityItemProps> = ({ title, items }) => {
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <div className="mb-4 border-b border-[#FFD700]/30 pb-2">
