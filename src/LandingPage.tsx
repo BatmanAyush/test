@@ -104,7 +104,7 @@ const ConnectivityItem: React.FC<ConnectivityItemProps> = ({ title, items }) => 
 
 const LandingPage = () => {
   const [popupTitle, setPopupTitle] = useState('')
-  const [isPopupOpen, setIsPopupOpen] = useState(false)
+  const [isPopupOpen, setIsPopupOpen] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
   const contactUsRef = useRef<HTMLElement>(null)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -444,7 +444,9 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section ref={servicesRef} className="py-20 relative overflow-hidden">
+     
+     
+      <section ref={servicesRef} className="py-20 md:py-32 relative overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
             src={photo}
@@ -453,42 +455,44 @@ const LandingPage = () => {
           />
         </div>
         <div className="container mx-auto px-4 md:px-0 relative z-10">
-          <h2 className="text-4xl font-bold text-center mb-12 text-white underline">Configuration</h2>
-          <div className="flex flex-wrap justify-center gap-8">
-          {configurationData.map((config, index) => (
-            <div
-              key={index}
-              className="bg-white bg-opacity-90 backdrop-filter backdrop-blur-lg p-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 w-64"
-            >
-              <h3 className="text-2xl font-bold mb-2 text-orange-500">{config.type}</h3>
-              <p className="text-lg text-gray-700 mb-4">{config.size}</p>
-              <button
-                onClick={() => openPopup('Check Price')}
-                className="w-full bg-orange-500 text-white py-2 px-4 rounded-md font-semibold hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
+          <h2 className="text-3xl font-bold text-center mb-16 text-white underline">CONFIGURATIONS</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            {configurationData.map((config, index) => (
+              <div
+                key={index}
+                className="bg-white bg-opacity-90 backdrop-filter backdrop-blur-lg p-8 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 flex flex-col justify-between"
               >
-                Check Price
-              </button>
-            </div>
-          ))}
+                <div>
+                  <h3 className="text-6xl font-bold mb-6 text-orange-500">{config.type}</h3>
+                  <p className="text-3xl text-gray-700 mb-8">{config.size}</p>
+                </div>
+                <button
+                  onClick={() => openPopup('Check Price')}
+                  className="w-full bg-green-800 text-white py-4 px-6 rounded-md text-2xl font-semibold hover:bg-green-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                >
+                  ₹ CHECK PRICE
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       <GallerySection />
 
-      <section ref={amenitiesRef} className="py-20 px-4 md:px-0 bg-orange-50">
+      <section ref={amenitiesRef} className="py-24 px-4 md:px-0 bg-orange-50">
         <div className="container mx-auto">
           <AnimatedSection>
-            <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">Amenities</h2>
+            <h2 className="text-5xl font-bold text-center mb-16 text-gray-800">Amenities</h2>
           </AnimatedSection>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {amenities.map((amenity, index) => (
               <AnimatedSection key={amenity.name} delay={0.2 * (index + 1)}>
-                <div className="bg-white p-6 rounded-lg shadow-lg transition-transform hover:scale-105">
+                <div className="bg-white p-8 rounded-lg shadow-lg transition-transform hover:scale-105">
                   {React.createElement(amenity.icon, {
-                    className: "w-12 h-12 mb-4 text-orange-500"
+                    className: "w-16 h-16 mb-6 text-orange-500"
                   })}
-                  <h3 className="text-xl font-semibold mb-2 text-gray-800">{amenity.name}</h3>
+                  <h3 className="text-2xl font-semibold mb-4 text-gray-800">{amenity.name}</h3>
                 </div>
               </AnimatedSection>
             ))}
@@ -496,13 +500,13 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section ref={connectivityRef} className="py-20 px-4 md:px-0 bg-gradient-to-b from-white to-orange-50">
+      <section ref={connectivityRef} className="py-24 px-4 md:px-0 bg-gradient-to-b from-white to-orange-50">
         <div className="container mx-auto">
           <AnimatedSection>
-            <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">Connectivity</h2>
+            <h2 className="text-6xl font-bold text-center mb-20 text-gray-800">Connectivity</h2>
           </AnimatedSection>
-          <div className="flex flex-col md:flex-row gap-8">
-            <div className="md:w-1/2 bg-white p-6 rounded-lg shadow-lg">
+          <div className="flex flex-col md:flex-row gap-16">
+            <div className="md:w-1/2 bg-white p-10 rounded-lg shadow-lg">
               <AnimatedSection delay={0.2}>
                 {connectivityData.map((item, index) => (
                   <ConnectivityItem key={index} title={item.title} items={item.items} />
@@ -511,11 +515,11 @@ const LandingPage = () => {
             </div>
             <div className="md:w-1/2">
               <AnimatedSection delay={0.4}>
-                <div className="bg-white p-2 rounded-lg shadow-lg">
+                <div className="bg-white p-4 rounded-lg shadow-lg">
                   <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3812603.289104417!2d70.06668495000002!3d21.062858779307554!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7a9017646de67%3A0x8a68bd52908884e9!2sEvershine%20Amavi%20303!5e0!3m2!1sen!2sin!4v1728989322507!5m2!1sen!2sin"
                     width="100%"
-                    height="450"
+                    height="600"
                     style={{ border: 0 }}
                     allowFullScreen
                     loading="lazy"

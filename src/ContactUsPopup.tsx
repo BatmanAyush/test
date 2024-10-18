@@ -25,57 +25,57 @@ const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose, title }) =
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 50, opacity: 0 }}
-            className="bg-white rounded-lg p-8 max-w-md w-full mx-4 relative"
+            className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-10 max-w-lg w-full mx-4 relative shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              className="absolute top-6 right-6 text-orange-600 hover:text-orange-800 transition-colors duration-300"
               onClick={onClose}
             >
-              <X className="w-6 h-6" />
+              <X className="w-8 h-8" />
             </button>
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">{title}</h2>
-            <form className="space-y-4">
+            <h2 className="text-4xl font-bold mb-8 text-orange-800 font-serif">{title}</h2>
+            <form className="space-y-6">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="name" className="block text-lg font-medium text-orange-700 mb-2">
                   Name
                 </label>
                 <input
                   type="text"
                   id="name"
                   name="name"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50"
+                  className="block w-full rounded-lg border-orange-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50 text-lg py-3 px-4"
                   required
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="email" className="block text-lg font-medium text-orange-700 mb-2">
                   Email
                 </label>
                 <input
                   type="email"
                   id="email"
                   name="email"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50"
+                  className="block w-full rounded-lg border-orange-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50 text-lg py-3 px-4"
                   required
                 />
               </div>
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="phone" className="block text-lg font-medium text-orange-700 mb-2">
                   Phone
                 </label>
                 <input
                   type="tel"
                   id="phone"
                   name="phone"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50"
+                  className="block w-full rounded-lg border-orange-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50 text-lg py-3 px-4"
                   required
                 />
               </div>
               <div>
                 <button
                   type="submit"
-                  className="w-full bg-orange-500 text-white py-2 px-4 rounded-md font-semibold hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
+                  className="w-full bg-orange-600 text-white py-3 px-6 rounded-lg font-bold text-xl hover:bg-orange-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 shadow-lg hover:shadow-xl transform hover:scale-105 transition-transform"
                 >
                   Submit
                 </button>
