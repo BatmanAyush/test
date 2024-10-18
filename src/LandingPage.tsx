@@ -480,26 +480,25 @@ const LandingPage = () => {
 
       <GallerySection />
 
-      <section ref={amenitiesRef} className="py-24 px-4 md:px-0 bg-orange-50">
+      <section ref={amenitiesRef} className="py-16 px-4 md:px-0 bg-orange-50">
         <div className="container mx-auto">
           <AnimatedSection>
-            <h2 className="text-5xl font-bold text-center mb-16 text-gray-800">Amenities</h2>
+            <h2 className="text-4xl font-bold text-center mb-8 text-gray-800">Amenities</h2>
           </AnimatedSection>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {amenities.map((amenity, index) => (
-              <AnimatedSection key={amenity.name} delay={0.2 * (index + 1)}>
-                <div className="bg-white p-8 rounded-lg shadow-lg transition-transform hover:scale-105">
+              <AnimatedSection key={amenity.name} delay={0.1 * (index + 1)}>
+                <div className="bg-white p-4 rounded-lg shadow-md transition-transform hover:scale-105 flex flex-col items-center justify-center h-full">
                   {React.createElement(amenity.icon, {
-                    className: "w-16 h-16 mb-6 text-orange-500"
+                    className: "w-10 h-10 mb-3 text-orange-500"
                   })}
-                  <h3 className="text-2xl font-semibold mb-4 text-gray-800">{amenity.name}</h3>
+                  <h3 className="text-sm sm:text-base font-semibold text-center text-gray-800">{amenity.name}</h3>
                 </div>
               </AnimatedSection>
             ))}
           </div>
         </div>
       </section>
-
       <section ref={connectivityRef} className="py-24 px-4 md:px-0 bg-gradient-to-b from-white to-orange-50">
         <div className="container mx-auto">
           <AnimatedSection>
