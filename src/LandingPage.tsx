@@ -294,7 +294,7 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white font-sans">
       <motion.header
-        className="fixed top-0 left-0 right-0 z-50 bg-white bg-opacity-90 text-gray-800 py-4 shadow-md"
+        className="fixed top-0 left-0 right-0 z-50 bg-white bg-opacity-90 text-gray-800 py-0 shadow-md"
         initial={{ opacity: 1, y: 0 }}
         animate={{ opacity: isHeaderVisible ? 1 : 0, y: isHeaderVisible ? 0 : -100 }}
         transition={{ duration: 0.3 }}
