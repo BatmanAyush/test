@@ -446,7 +446,8 @@ const LandingPage = () => {
 
      
      
-      <section ref={servicesRef} className="py-20 md:py-32 relative overflow-hidden">
+    
+      <section ref={servicesRef} className="py-16 md:py-24 relative overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
             src={photo}
@@ -455,20 +456,20 @@ const LandingPage = () => {
           />
         </div>
         <div className="container mx-auto px-4 md:px-0 relative z-10">
-          <h2 className="text-3xl font-bold text-center mb-16 text-white underline">CONFIGURATIONS</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-8 md:mb-12 text-white underline">CONFIGURATIONS</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8 max-w-4xl mx-auto">
             {configurationData.map((config, index) => (
               <div
                 key={index}
-                className="bg-white bg-opacity-90 backdrop-filter backdrop-blur-lg p-8 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 flex flex-col justify-between"
+                className="bg-white bg-opacity-90 backdrop-filter backdrop-blur-lg p-4 md:p-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 flex flex-col justify-between"
               >
                 <div>
-                  <h3 className="text-6xl font-bold mb-6 text-orange-500">{config.type}</h3>
-                  <p className="text-3xl text-gray-700 mb-8">{config.size}</p>
+                  <h3 className="text-3xl md:text-4xl font-bold mb-2 md:mb-4 text-orange-500">{config.type}</h3>
+                  <p className="text-xl md:text-2xl text-gray-700 mb-4 md:mb-6">{config.size}</p>
                 </div>
                 <button
                   onClick={() => openPopup('Check Price')}
-                  className="w-full bg-green-800 text-white py-4 px-6 rounded-md text-2xl font-semibold hover:bg-green-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                  className="w-full bg-green-800 text-white py-2 md:py-3 px-4 md:px-5 rounded-md text-lg md:text-xl font-semibold hover:bg-green-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
                 >
                   ₹ CHECK PRICE
                 </button>
