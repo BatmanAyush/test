@@ -300,7 +300,7 @@ const LandingPage = () => {
         transition={{ duration: 0.3 }}
       >
         <div className="container mx-auto px-4 flex justify-between items-center">
-          <img src={logo2} alt="Evershine Amavi Logo" className="h-20" />
+          <img src={logo2} alt="Evershine Amavi Logo" className="h-16" />
           <nav className="hidden md:block">
             <ul className="flex space-x-6 items-center">
               <li>
