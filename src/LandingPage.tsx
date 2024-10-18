@@ -6,14 +6,15 @@ import { useInView } from 'react-intersection-observer'
 import { Trees, School, Users, Dumbbell, Waves, Utensils, LandPlot, Gamepad, Heart, ChevronDown, ChevronLeft, ChevronRight, Menu } from 'lucide-react'
 import photo from './builder.jpg'
 import logo from './Evershine Builder logo 1200x1200-01(2).png'
-import logo2 from './Evershine Builder logo 1200x1200-01.jpg' // Added import for logo2
+import logo2 from './Evershine Builder logo 1200x1200-01.jpg'
 import desktopBanner from './11zon_resized.jpg'
 import mobileBanner from './Amavi_Mobile 500x800 1.jpg'
-import ContactPopup from './ContactUsPopup'
-import GallerySection from './GallerySection'
 import qrCode1 from './Eevershine-Amavi-Phase-1.webp'
 import qrCode2 from './Eevershine-Amavi-Phase-2.webp'
 import qrCode3 from './Eevershine-Amavi-Phase-3.webp'
+import ContactPopup from './ContactUsPopup'
+import GallerySection from './GallerySection'
+
 interface AnimatedSectionProps {
   children: ReactNode
   delay?: number
@@ -63,9 +64,9 @@ const ConnectivityItem: React.FC<ConnectivityItemProps> = ({ title, items }) => 
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <div className="mb-4 border-b border-[#FFD700]/30 pb-2">
+    <div className="mb-4 border-b border-orange-200 pb-2">
       <button
-        className="flex justify-between items-center w-full text-left font-semibold text-lg text-[#1A1A1A] hover:text-[#FFD700] transition-all duration-300 ease-in-out"
+        className="flex justify-between items-center w-full text-left font-semibold text-lg text-gray-800 hover:text-orange-500 transition-all duration-300 ease-in-out"
         onClick={() => setIsOpen(!isOpen)}
       >
         {title}
@@ -85,12 +86,12 @@ const ConnectivityItem: React.FC<ConnectivityItemProps> = ({ title, items }) => 
         {items.map((item, index) => (
           <motion.li
             key={index}
-            className="mb-2 p-2 rounded-md hover:bg-[#FFF8E1] transition-all duration-300 ease-in-out"
+            className="mb-2 p-2 rounded-md hover:bg-orange-50 transition-all duration-300 ease-in-out"
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.3, delay: index * 0.1 }}
           >
-            <span className="font-medium text-[#1A1A1A]">{item.name}</span>
+            <span className="font-medium text-gray-800">{item.name}</span>
             <span className="text-sm text-gray-600 ml-2">
               {item.distance} | {item.time}
             </span>
@@ -103,7 +104,7 @@ const ConnectivityItem: React.FC<ConnectivityItemProps> = ({ title, items }) => 
 
 const LandingPage = () => {
   const [popupTitle, setPopupTitle] = useState('')
-  const [isPopupOpen, setIsPopupOpen] = useState(true)
+  const [isPopupOpen, setIsPopupOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const contactUsRef = useRef<HTMLElement>(null)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -291,9 +292,9 @@ const LandingPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FFF8E1] to-white font-sans">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white font-sans">
       <motion.header
-        className="fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-70 text-white py-4"
+        className="fixed top-0 left-0 right-0 z-50 bg-white bg-opacity-90 text-gray-800 py-4 shadow-md"
         initial={{ opacity: 1, y: 0 }}
         animate={{ opacity: isHeaderVisible ? 1 : 0, y: isHeaderVisible ? 0 : -100 }}
         transition={{ duration: 0.3 }}
@@ -306,70 +307,69 @@ const LandingPage = () => {
                 <img src={logo} alt="Evershine Amavi Logo" className="h-16" />
               </li>
               <li>
-                <button onClick={() => scrollToSection(overviewRef)} className="text-white hover:text-[#FFD700] transition-colors">
+                <button onClick={() => scrollToSection(overviewRef)} className="text-gray-800 hover:text-orange-500 transition-colors">
                   Overview
                 </button>
               </li>
               <li>
-                <button onClick={() => scrollToSection(servicesRef)} className="text-white hover:text-[#FFD700] transition-colors">
+                <button onClick={() => scrollToSection(servicesRef)} className="text-gray-800 hover:text-orange-500 transition-colors">
                   Configuration
                 </button>
               </li>
               <li>
-                <button onClick={() => scrollToSection(amenitiesRef)} className="text-white hover:text-[#FFD700] transition-colors">
+                <button onClick={() => scrollToSection(amenitiesRef)} className="text-gray-800 hover:text-orange-500 transition-colors">
                   Amenities
                 </button>
               </li>
               <li>
-                <button onClick={() => scrollToSection(connectivityRef)} className="text-white hover:text-[#FFD700] transition-colors">
+                <button onClick={() => scrollToSection(connectivityRef)} className="text-gray-800 hover:text-orange-500 transition-colors">
                   Connectivity
                 </button>
               </li>
               <li>
-                <button onClick={() => scrollToSection(aboutUsRef)} className="text-white hover:text-[#FFD700] transition-colors">
+                <button onClick={() => scrollToSection(aboutUsRef)} className="text-gray-800 hover:text-orange-500 transition-colors">
                   About Us
                 </button>
               </li>
               <li>
-                <button onClick={() => scrollToSection(contactUsRef)} className="text-white hover:text-[#FFD700] transition-colors">
+                <button onClick={() => scrollToSection(contactUsRef)} className="text-gray-800 hover:text-orange-500 transition-colors">
                   Contact Us
                 </button>
               </li>
             </ul>
           </nav>
-          <button className="md:hidden text-white" onClick={toggleMenu}>
+          <button className="md:hidden  text-gray-800" onClick={toggleMenu}>
             <Menu />
           </button>
         </div>
         {isMenuOpen && (
-          <div className="md:hidden bg-black bg-opacity-90 py-4">
+          <div className="md:hidden bg-white bg-opacity-90 py-4">
             <ul className="flex flex-col items-center space-y-4">
               <li>
                 <img src={logo} alt="Evershine Amavi Logo" className="h-16 mb-4" />
               </li>
               <li>
-                <button onClick={() => { scrollToSection(aboutUsRef); toggleMenu(); }} className="text-white hover:text-[#FFD700] transition-colors">
+                <button onClick={() => { scrollToSection(aboutUsRef); toggleMenu(); }} className="text-gray-800 hover:text-orange-500 transition-colors">
                   Overview
                 </button>
               </li>
               <li>
-                <button onClick={() => { scrollToSection(amenitiesRef); toggleMenu(); }} className="text-white hover:text-[#FFD700] transition-colors">
+                <button onClick={() => { scrollToSection(amenitiesRef); toggleMenu(); }} className="text-gray-800 hover:text-orange-500 transition-colors">
                   Amenities
                 </button>
               </li>
               <li>
-                <button onClick={() => { scrollToSection(connectivityRef); toggleMenu(); }} className="text-white hover:text-[#FFD700] transition-colors">
+                <button onClick={() => { scrollToSection(connectivityRef); toggleMenu(); }} className="text-gray-800 hover:text-orange-500 transition-colors">
                   Connectivity
                 </button>
-
               </li>
               <li>
-                <button onClick={() => { scrollToSection(aboutUsRef); toggleMenu(); }} className="text-white hover:text-[#FFD700] transition-colors">
+                <button onClick={() => { scrollToSection(aboutUsRef); toggleMenu(); }} className="text-gray-800 hover:text-orange-500 transition-colors">
                   About Us
                 </button>
               </li>
               <li>
-                <button onClick={() => { scrollToSection(contactUsRef); toggleMenu(); }} className="text-white hover:text-[#FFD700] transition-colors">
+                <button onClick={() => { scrollToSection(contactUsRef); toggleMenu(); }} className="text-gray-800 hover:text-orange-500 transition-colors">
                   Contact Us
                 </button>
               </li>
@@ -388,7 +388,7 @@ const LandingPage = () => {
           transition={{ duration: 0.8 }}
         />
         {isMobile && (
-          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-4 z-10">
+          <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-80 text-gray-800 p-4 z-10">
             <h2 className="text-2xl font-bold mb-2">READY-TO-MOVE-IN, LARGE 1 & 2 BHKS</h2>
             <p className="text-lg font-semibold">STARTING AT ₹ 41.50 LACS* ONWARDS</p>
           </div>
@@ -398,11 +398,11 @@ const LandingPage = () => {
       <section ref={overviewRef} className="py-20 px-4 md:px-0 bg-white">
         <div className="container mx-auto">
           <AnimatedSection>
-            <h2 className="text-4xl font-bold text-center mb-4 text-[#1A1A1A]">OVERVIEW</h2>
-            <div className="w-24 h-1 bg-[#FFD700] mx-auto mb-8"></div>
+            <h2 className="text-4xl font-bold text-center mb-4 text-gray-800">OVERVIEW</h2>
+            <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
           </AnimatedSection>
           <AnimatedSection delay={0.2}>
-            <p className="text-center text-lg mb-12 text-[#4A4A4A] max-w-4xl mx-auto">
+            <p className="text-center text-lg mb-12 text-gray-600 max-w-4xl mx-auto">
               Nestled within the expansive landscape of Global City, Amavi 303 is a private haven that
               combines serenity with luxury. Inspired by the Latin phrase "Veni, Vidi, Amavi" —
               meaning "I came, I saw, I loved" - Amavi 303 offers an escape from the chaos of city life,
@@ -410,7 +410,7 @@ const LandingPage = () => {
             </p>
           </AnimatedSection>
           <AnimatedSection delay={0.4}>
-            <div className="relative mt-12 bg-[#F0F0F0] rounded-lg shadow-lg p-8 h-[300px]">
+            <div className="relative mt-12 bg-orange-50 rounded-lg shadow-lg p-8 h-[300px]">
               <AnimatePresence initial={false} custom={direction} mode="wait">
                 <motion.div
                   key={currentOverviewSlide}
@@ -421,19 +421,19 @@ const LandingPage = () => {
                   exit="exit"
                   className="absolute inset-0 flex flex-col justify-center items-center p-8"
                 >
-                  <h3 className="text-2xl font-bold mb-4 text-[#1A1A1A]">{overviewSlides[currentOverviewSlide].title}</h3>
-                  <p className="text-[#4A4A4A] text-lg text-center">{overviewSlides[currentOverviewSlide].description}</p>
+                  <h3 className="text-2xl font-bold mb-4 text-gray-800">{overviewSlides[currentOverviewSlide].title}</h3>
+                  <p className="text-gray-600 text-lg text-center">{overviewSlides[currentOverviewSlide].description}</p>
                 </motion.div>
               </AnimatePresence>
               <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-4">
                 <button
-                  className="bg-[#FFD700] text-[#1A1A1A] px-4 py-2 rounded-full shadow-md hover:bg-[#FFD700]/80 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:ring-opacity-50"
+                  className="bg-orange-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
                   onClick={prevSlide}
                 >
                   <ChevronLeft className="w-6 h-6" />
                 </button>
                 <button
-                  className="bg-[#FFD700] text-[#1A1A1A] px-4 py-2 rounded-full shadow-md hover:bg-[#FFD700]/80 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:ring-opacity-50"
+                  className="bg-orange-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
                   onClick={nextSlide}
                 >
                   <ChevronRight className="w-6 h-6" />
@@ -458,38 +458,37 @@ const LandingPage = () => {
           {configurationData.map((config, index) => (
             <div
               key={index}
-              className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg p-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 w-64"
+              className="bg-white bg-opacity-90 backdrop-filter backdrop-blur-lg p-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 w-64"
             >
-              <h3 className="text-2xl font-bold mb-2 text-[#FFD700]">{config.type}</h3>
-              <p className="text-lg text-white mb-4">{config.size}</p>
+              <h3 className="text-2xl font-bold mb-2 text-orange-500">{config.type}</h3>
+              <p className="text-lg text-gray-700 mb-4">{config.size}</p>
               <button
                 onClick={() => openPopup('Check Price')}
-                className="w-full bg-[#FFD700] text-[#1A1A1A] py-2 px-4 rounded-md font-semibold hover:bg-[#FFD700]/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:ring-opacity-50"
+                className="w-full bg-orange-500 text-white py-2 px-4 rounded-md font-semibold hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
               >
                 Check Price
               </button>
             </div>
           ))}
-
           </div>
         </div>
       </section>
 
       <GallerySection />
 
-      <section ref={amenitiesRef} className="py-20 px-4 md:px-0 bg-[#FFF8E1]">
+      <section ref={amenitiesRef} className="py-20 px-4 md:px-0 bg-orange-50">
         <div className="container mx-auto">
           <AnimatedSection>
-            <h2 className="text-4xl font-bold text-center mb-12 text-[#1A1A1A]">Amenities</h2>
+            <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">Amenities</h2>
           </AnimatedSection>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {amenities.map((amenity, index) => (
               <AnimatedSection key={amenity.name} delay={0.2 * (index + 1)}>
                 <div className="bg-white p-6 rounded-lg shadow-lg transition-transform hover:scale-105">
                   {React.createElement(amenity.icon, {
-                    className: "w-12 h-12 mb-4 text-[#FFD700]"
+                    className: "w-12 h-12 mb-4 text-orange-500"
                   })}
-                  <h3 className="text-xl font-semibold mb-2 text-[#1A1A1A]">{amenity.name}</h3>
+                  <h3 className="text-xl font-semibold mb-2 text-gray-800">{amenity.name}</h3>
                 </div>
               </AnimatedSection>
             ))}
@@ -497,10 +496,10 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section ref={connectivityRef} className="py-20 px-4 md:px-0 bg-gradient-to-b from-white to-[#FFF8E1]">
+      <section ref={connectivityRef} className="py-20 px-4 md:px-0 bg-gradient-to-b from-white to-orange-50">
         <div className="container mx-auto">
           <AnimatedSection>
-            <h2 className="text-4xl font-bold text-center mb-12 text-[#1A1A1A]">Connectivity</h2>
+            <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">Connectivity</h2>
           </AnimatedSection>
           <div className="flex flex-col md:flex-row gap-8">
             <div className="md:w-1/2 bg-white p-6 rounded-lg shadow-lg">
@@ -531,11 +530,11 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section ref={aboutUsRef} className="py-20 px-4 md:px-0 bg-gray-100">
+      <section ref={aboutUsRef} className="py-20 px-4 md:px-0 bg-white">
         <div className="container mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-8 text-[#1A1A1A]">ABOUT US</h2>
+          <h2 className="text-4xl font-bold text-center mb-8 text-gray-800">ABOUT US</h2>
           <div className="max-w-3xl mx-auto text-center">
-            <p className="text-lg mb-6 text-[#4A4A4A]">
+            <p className="text-lg mb-6 text-gray-600">
               Founded in 1960, Evershine Group has established a legacy of values through the creation of
               infrastructure. For over six decades, we have aimed to exceed our promises by delivering more than
               what we commit. We have focused on offering middle-income families an aspirational lifestyle, with
@@ -547,28 +546,28 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section ref={contactUsRef} className="py-20 px-4 md:px-0 bg-gradient-to-b from-[#1A1A1A] to-[#2A2A2A] text-white">
+      <section ref={contactUsRef} className="py-20 px-4 md:px-0 bg-gradient-to-b from-orange-100 to-orange-200 text-gray-800">
         <div className="container mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-4 text-[#FFD700]">Contact Us</h2>
+          <h2 className="text-4xl font-bold text-center mb-4 text-orange-600">Contact Us</h2>
           <p className="text-center text-lg mb-12 max-w-2xl mx-auto">
             Get in touch with us to learn more about our projects or to schedule a visit to our sample flat.
           </p>
-          <div className="max-w-md mx-auto bg-[#2A2A2A] p-8 rounded-lg shadow-lg border border-[#FFD700]/30">
+          <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg border border-orange-300">
             <form className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-[#FFD700]">Name</label>
-                <input type="text" id="name" name="name" className="mt-1 block w-full rounded-md bg-[#3A3A3A] border-gray-600 text-white shadow-sm focus:border-[#FFD700] focus:ring focus:ring-[#FFD700] focus:ring-opacity-50" required />
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+                <input type="text" id="name" name="name" className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
               </div>
               <div>
-                <label htmlFor="mobile" className="block text-sm font-medium text-[#FFD700]">Mobile</label>
-                <input type="tel" id="mobile" name="mobile" className="mt-1 block w-full rounded-md bg-[#3A3A3A] border-gray-600 text-white shadow-sm focus:border-[#FFD700] focus:ring focus:ring-[#FFD700] focus:ring-opacity-50" required />
+                <label htmlFor="mobile" className="block text-sm font-medium text-gray-700">Mobile</label>
+                <input type="tel" id="mobile" name="mobile" className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-[#FFD700]">Email</label>
-                <input type="email" id="email" name="email" className="mt-1 block w-full rounded-md bg-[#3A3A3A] border-gray-600 text-white shadow-sm focus:border-[#FFD700] focus:ring focus:ring-[#FFD700] focus:ring-opacity-50" required />
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" id="email" name="email" className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
               </div>
               <div>
-                <button type="submit" className="w-full bg-[#FFD700] text-[#1A1A1A] py-2 px-4 rounded-md font-semibold hover:bg-[#FFD700]/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:ring-opacity-50">
+                <button type="submit" className="w-full bg-orange-500 text-white py-2 px-4 rounded-md font-semibold hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
                   Submit
                 </button>
               </div>
@@ -576,14 +575,13 @@ const LandingPage = () => {
           </div>
           <div className="mt-12 text-center">
             <p className="text-lg font-semibold mb-2">Site Address</p>
-            <p className="text-[#FFD700] mt-1 mb-3">Evershine Global City, Avenue I1, Virar (West), Maharashtra 401303</p>
+            <p className="text-orange-600 mt-1 mb-3">Evershine Global City, Avenue I1, Virar (West), Maharashtra 401303</p>
             <p>+91 8828309719 / +91 9096669171</p>
           </div>
         </div>
       </section>
 
-   
-      <footer className="bg-[#1A1A1A] text-white py-8">
+      <footer className="bg-white text-gray-800 py-8">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
             <div className="flex space-x-4">
@@ -605,7 +603,7 @@ const LandingPage = () => {
                 MahaRERA No.: P51800056477 and is available on the website https://maharera.mahaonline.gov.in under registered projects | *T&C Apply.
               </p>
               <button
-                className="mt-2 text-sm underline cursor-pointer hover:text-[#FFD700] transition-colors"
+                className="mt-2 text-sm underline cursor-pointer hover:text-orange-500 transition-colors"
                 onClick={() => openPopup('Disclaimer')}
               >
                 Disclaimer
@@ -618,10 +616,9 @@ const LandingPage = () => {
         </div>
       </footer>
 
-
       {/* Contact buttons */}
       <motion.button
-        className="fixed bottom-4 left-4 bg-[#1A1A1A] text-[#FFD700] px-4 py-2 rounded-md shadow-lg hover:bg-[#2A2A2A] transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:ring-opacity-50 z-50 font-semibold"
+        className="fixed bottom-4 left-4 bg-orange-500 text-white px-4 py-2 rounded-md shadow-lg hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 z-50 font-semibold"
         onClick={() => openPopup('Download Brochure')}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -629,7 +626,7 @@ const LandingPage = () => {
         Download Brochure
       </motion.button>
       <motion.button
-        className="fixed bottom-4 right-4 bg-[#1A1A1A] text-[#FFD700] px-4 py-2 rounded-md shadow-lg hover:bg-[#2A2A2A] transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:ring-opacity-50 z-50 font-semibold"
+        className="fixed bottom-4 right-4 bg-orange-500 text-white px-4 py-2 rounded-md shadow-lg hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 z-50 font-semibold"
         onClick={() => openPopup('Enquire Now')}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
