@@ -1,623 +1,142 @@
-'use client'
+import { useState, useEffect } from 'react'
+import { Menu, X, ChevronRight, BarChart2, TrendingUp, AlertTriangle, DollarSign, Leaf } from 'lucide-react'
 
-import React, { ReactNode, useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence, useAnimation, useScroll } from 'framer-motion'
-import { useInView } from 'react-intersection-observer'
-import { Trees, School, Users, Dumbbell, Waves, Utensils, LandPlot, Gamepad, Heart, ChevronDown, ChevronLeft, ChevronRight, Menu } from 'lucide-react'
-import photo from './builder.jpg'
-import logo from './Evershine Builder logo 1200x1200-01(2).png'
-import logo2 from './Evershine Amavi-01 logo.png'
-import desktopBanner from './11zon_resized.jpg'
-import mobileBanner from './Amavi_Mobile 500x800 1.jpg'
-import qrCode1 from './Eevershine-Amavi-Phase-1.webp'
-import qrCode2 from './Eevershine-Amavi-Phase-2.webp'
-import qrCode3 from './Eevershine-Amavi-Phase-3.webp'
-import ContactPopup from './ContactUsPopup'
-import GallerySection from './GallerySection'
-
-interface AnimatedSectionProps {
-  children: ReactNode
-  delay?: number
-}
-
-const AnimatedSection: React.FC<AnimatedSectionProps> = ({ children, delay = 0 }) => {
-  const controls = useAnimation()
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  })
-
-  useEffect(() => {
-    if (inView) {
-      controls.start('visible')
-    }
-  }, [controls, inView])
-
-  return (
-    <motion.div
-      ref={ref}
-      animate={controls}
-      initial="hidden"
-      transition={{ duration: 0.5, delay }}
-      variants={{
-        visible: { opacity: 1, y: 0 },
-        hidden: { opacity: 0, y: 50 }
-      }}
-    >
-      {children}
-    </motion.div>
-  )
-}
-
-interface Item {
-  name: string
-  distance: string
-  time: string
-}
-
-interface ConnectivityItemProps {
-  title: string
-  items: Item[]
-}
-
-const ConnectivityItem: React.FC<ConnectivityItemProps> = ({ title, items }) => {
-  const [isOpen, setIsOpen] = useState(false)
-
-  return (
-    <div className="mb-4 border-b border-orange-200 pb-2">
-      <button
-        className="flex justify-between items-center w-full text-left font-semibold text-lg text-gray-800 hover:text-orange-500 transition-all duration-300 ease-in-out"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        {title}
-        <motion.div
-          animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <ChevronDown className="w-5 h-5" />
-        </motion.div>
-      </button>
-      <motion.ul
-        className="mt-2 ml-4 overflow-hidden"
-        initial={{ height: 0, opacity: 0 }}
-        animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        {items.map((item, index) => (
-          <motion.li
-            key={index}
-            className="mb-2 p-2 rounded-md hover:bg-orange-50 transition-all duration-300 ease-in-out"
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
-          >
-            <span className="font-medium text-gray-800">{item.name}</span>
-            <span className="text-sm text-gray-600 ml-2">
-              {item.distance} | {item.time}
-            </span>
-          </motion.li>
-        ))}
-      </motion.ul>
-    </div>
-  )
-}
-
-const LandingPage = () => {
-  const [popupTitle, setPopupTitle] = useState('')
-  const [isPopupOpen, setIsPopupOpen] = useState(true)
-  const [isMobile, setIsMobile] = useState(false)
-  const contactUsRef = useRef<HTMLElement>(null)
+export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isHeaderVisible, setIsHeaderVisible] = useState(true)
-  const { scrollY } = useScroll()
-  const aboutUsRef = useRef(null)
-  const overviewRef = useRef<HTMLElement>(null)
-  const servicesRef = useRef(null)
-  const amenitiesRef = useRef(null)
-  const connectivityRef = useRef(null)
-  const [currentOverviewSlide, setCurrentOverviewSlide] = useState(0)
-  const [direction, setDirection] = useState(0)
+  const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
-    return scrollY.onChange((latest) => {
-      const previous = scrollY.getPrevious() ?? 0
-      if (latest > previous && latest > 100) {
-        setIsHeaderVisible(false)
-      } else {
-        setIsHeaderVisible(true)
-      }
-    })
-  }, [scrollY])
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 820)
-    }
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    setIsVisible(true)
   }, [])
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      nextSlide()
-    }, 5000)
-
-    return () => clearInterval(timer)
-  }, [])
-
-  const scrollToSection = (ref: React.RefObject<HTMLElement>) => {
-    ref.current?.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  const openPopup = (title: string) => {
-    setPopupTitle(title)
-    setIsPopupOpen(true)
-  }
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen)
-  }
-
-  const amenities = [
-    { name: "Yazo Park", icon: Trees },
-    { name: "Cambridge International School", icon: School },
-    { name: "Clubhouse", icon: Users },
-    { name: "Gymnasium", icon: Dumbbell },
-    { name: "Swimming Pool", icon: Waves },
-    { name: "Banquet Hall", icon: Utensils },
-    { name: "Siddhivinayak Temple", icon: LandPlot },
-    { name: "Yoga Center", icon: Heart },
-    { name: "Board Games and Lot more!", icon: Gamepad }
-  ]
-
-  const configurationData = [
-    { type: "1BHK", size: "395 sq ft" },
-    { type: "1BHK Premium", size: "435 sq ft" },
-    { type: "2BHK", size: "535 sq ft" },
-    { type: "2BHK Premium", size: "612 sq ft" },
-  ]
-
-  const connectivityData = [
-    {
-      title: "Major Roads",
-      items: [
-        { name: "NH8", distance: "3.8km", time: "12mins" },
-        { name: "Ghodbunder Road", distance: "36km", time: "56mins" },
-        { name: "Malad Mindspace", distance: "50.3km", time: "1hr 37mins" },
-        { name: "Airport", distance: "57km", time: "1hr 56min" },
-      ]
-    },
-    {
-      title: "Shopping",
-      items: [
-        { name: "Redbricks business Plaza", distance: "1.3km", time: "5mins" },
-        { name: "Magnet Mall", distance: "1.7km", time: "5mins" },
-        { name: "Vijay Sales", distance: "2.6km", time: "8mins" },
-        { name: "Reliance Digital Life", distance: "3km", time: "12mins" },
-        { name: "D-mart", distance: "2.6km", time: "9mins" },
-      ]
-    },
-    {
-      title: "Stations",
-      items: [
-        { name: "Virar Railway Station", distance: "3.3km", time: "11mins" },
-        { name: "Vasai Railway Station", distance: "14.8km", time: "48mins" },
-      ]
-    },
-    {
-      title: "Schools",
-      items: [
-        { name: "Rustomjee Cambridge Int School", distance: "1km", time: "5mins" },
-        { name: "Expert International High School", distance: "1.9km", time: "6mins" },
-        { name: "St Xavier's High School", distance: "2.4km", time: "7mins" },
-        { name: "National English High School", distance: "3km", time: "10mins" },
-      ]
-    },
-    {
-      title: "Entertainment",
-      items: [
-        { name: "Yazoo Park", distance: "1.2km", time: "6mins" },
-        { name: "Woodlands Cinema", distance: "3.4km", time: "11mins" },
-        { name: "Rockstar Nava Cinema", distance: "8.1km", time: "20mins" },
-        { name: "Patil Resort", distance: "10km", time: "26mins" },
-        { name: "Arnala Resort", distance: "10.1km", time: "27mins" },
-      ]
-    },
-    {
-      title: "Banks",
-      items: [
-        { name: "HDFC Bank ATM", distance: "300m", time: "2mins" },
-        { name: "Andhra Bank", distance: "1.4km", time: "4mins" },
-        { name: "Axis Bank ATM", distance: "1.4km", time: "7mins" },
-        { name: "ICICI Bank ATM", distance: "1.8km", time: "8mins" },
-        { name: "Bank of India", distance: "2km", time: "10mins" },
-      ]
-    },
-    {
-      title: "Hospitals",
-      items: [
-        { name: "Global Hospital", distance: "1.2km", time: "3mins" },
-        { name: "Param Maternity & Nursing Hospital", distance: "1.9km", time: "6mins" },
-        { name: "Mahavir Hospital", distance: "2km", time: "6mins" },
-        { name: "Sanjivani Hospital", distance: "2.2km", time: "7mins" },
-      ]
-    },
-    {
-      title: "Fast Food Restaurants",
-      items: [
-        { name: "Dominos pizza", distance: "2.2km", time: "7mins" },
-        { name: "McDonald's", distance: "1.5km", time: "5mins" },
-      ]
-    },
-  ]
-
-  const overviewSlides = [
-    { title: "33 Acre Land Parcel", description: "Expansive land area for comprehensive development" },
-    { title: "12.5 Acres Sports Stadia", description: "State-of-the-art sports facilities for residents" },
-    { title: "Luxury Apartments", description: "Opulent living spaces with modern amenities" },
-  ]
-
-  const nextSlide = () => {
-    setDirection(1)
-    setCurrentOverviewSlide((prev) => (prev === overviewSlides.length - 1 ? 0 : prev + 1))
-  }
-
-  const prevSlide = () => {
-    setDirection(-1)
-    setCurrentOverviewSlide((prev) => (prev === 0 ? overviewSlides.length - 1 : prev - 1))
-  }
-
-  const slideVariants = {
-    hidden: (direction: number) => ({
-      x: direction > 0 ? 300 : -300,
-      opacity: 0,
-    }),
-    visible: {
-      x: 0,
-      opacity: 1,
-      transition: {
-        x: { type: 'spring', stiffness: 300, damping: 30 },
-        opacity: { duration: 0.2 },
-      },
-    },
-    exit: (direction: number) => ({
-      x: direction > 0 ? -300 : 300,
-      opacity: 0,
-      transition: {
-        x: { type: 'spring', stiffness: 300, damping: 30 },
-        opacity: { duration: 0.2 },
-      },
-    }),
-  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white font-sans">
-      <motion.header
-        className="fixed top-0 left-0 right-0 z-50 bg-white bg-opacity-90 text-gray-800 py-0 shadow-mdd"
-        initial={{ opacity: 1, y: 0 }}
-        animate={{ opacity: isHeaderVisible ? 1 : 0, y: isHeaderVisible ? 0 : -100 }}
-        transition={{ duration: 0.3 }}
-      >
-        <div className="container mx-auto px-4 flex justify-between items-center">
-          <img src={logo2} alt="Evershine Amavi Logo" className="h-20" />
-          <nav className="hidden md:block">
-            <ul className="flex space-x-11 items-center">
-              
-              <li>
-                <button onClick={() => scrollToSection(overviewRef)} className="text-gray-800 hover:text-orange-500 transition-colors">
-                  Overview
-                </button>
-              </li>
-              <li>
-                <button onClick={() => scrollToSection(servicesRef)} className="text-gray-800 hover:text-orange-500 transition-colors">
-                  Configuration
-                </button>
-              </li>
-              <li>
-                <button onClick={() => scrollToSection(amenitiesRef)} className="text-gray-800 hover:text-orange-500 transition-colors">
-                  Amenities
-                </button>
-              </li>
-              <li>
-                <button onClick={() => scrollToSection(connectivityRef)} className="text-gray-800 hover:text-orange-500 transition-colors">
-                  Connectivity
-                </button>
-              </li>
-              <li>
-                <button onClick={() => scrollToSection(aboutUsRef)} className="text-gray-800 hover:text-orange-500 transition-colors">
-                  About Us
-                </button>
-              </li>
-              <li>
-                <button onClick={() => scrollToSection(contactUsRef)} className="text-gray-800 hover:text-orange-500 transition-colors">
-                  Contact Us
-                </button>
-                
-              </li>
-              <li>
-                <img src={logo} alt="Evershine Amavi Logo" className="h-16" />
-              </li>
-            </ul>
+    <div className="min-h-screen bg-gradient-to-b from-[#E4E0E1] to-[#D6C0B3]">
+      <header className="bg-[#493628] text-white">
+        <div className="container mx-auto px-4 py-6 flex justify-between items-center">
+          <h1 className="text-2xl font-bold">Fresh Finds</h1>
+          <nav className="hidden md:flex space-x-6">
+            <a href="#features" className="hover:text-[#AB886D] transition-colors">Features</a>
+            <a href="#how-it-works" className="hover:text-[#AB886D] transition-colors">How It Works</a>
+            <a href="#benefits" className="hover:text-[#AB886D] transition-colors">Benefits</a>
+            <a href="#contact" className="hover:text-[#AB886D] transition-colors">Contact</a>
           </nav>
-          <button className="md:hidden  text-gray-800" onClick={toggleMenu}>
-            <Menu />
+          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden">
+            {isMenuOpen ? <X /> : <Menu />}
           </button>
         </div>
         {isMenuOpen && (
-          <div className="md:hidden bg-white bg-opacity-90 py-4">
-            <ul className="flex flex-col items-center space-y-4">
-              <li>
-                <img src={logo} alt="Evershine Amavi Logo" className="h-16 mb-4" />
-              </li>
-              <li>
-                <button onClick={() => { scrollToSection(aboutUsRef); toggleMenu(); }} className="text-gray-800 hover:text-orange-500 transition-colors">
-                  Overview
-                </button>
-              </li>
-              <li>
-                <button onClick={() => { scrollToSection(amenitiesRef); toggleMenu(); }} className="text-gray-800 hover:text-orange-500 transition-colors">
-                  Amenities
-                </button>
-              </li>
-              <li>
-                <button onClick={() => { scrollToSection(connectivityRef); toggleMenu(); }} className="text-gray-800 hover:text-orange-500 transition-colors">
-                  Connectivity
-                </button>
-              </li>
-              <li>
-                <button onClick={() => { scrollToSection(aboutUsRef); toggleMenu(); }} className="text-gray-800 hover:text-orange-500 transition-colors">
-                  About Us
-                </button>
-              </li>
-              <li>
-                <button onClick={() => { scrollToSection(contactUsRef); toggleMenu(); }} className="text-gray-800 hover:text-orange-500 transition-colors">
-                  Contact Us
-                </button>
-              </li>
-            </ul>
-          </div>
+          <nav className="md:hidden bg-[#493628] px-4 py-2">
+            <a href="#features" className="block py-2 hover:text-[#AB886D] transition-colors">Features</a>
+            <a href="#how-it-works" className="block py-2 hover:text-[#AB886D] transition-colors">How It Works</a>
+            <a href="#benefits" className="block py-2 hover:text-[#AB886D] transition-colors">Benefits</a>
+            <a href="#contact" className="block py-2 hover:text-[#AB886D] transition-colors">Contact</a>
+          </nav>
         )}
-      </motion.header>
+      </header>
 
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <motion.img
-          src={isMobile ? mobileBanner : desktopBanner}
-          alt="Evershine Amavi Project"
-          className="absolute inset-0 w-full h-full object-fit z-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-        />
-        {isMobile && (
-          <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-80 text-gray-800 p-4 z-10">
-            <h2 className="text-2xl font-bold mb-2">READY-TO-MOVE-IN, LARGE 1 & 2 BHKS</h2>
-            <p className="text-lg font-semibold">STARTING AT ₹ 41.50 LACS* ONWARDS</p>
-          </div>
-        )}
-      </section>
-
-      <section ref={overviewRef} className="py-20 px-4 md:px-0 bg-white">
-        <div className="container mx-auto">
-          <AnimatedSection>
-            <h2 className="text-4xl font-bold text-center mb-4 text-gray-800">OVERVIEW</h2>
-            <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-          </AnimatedSection>
-          <AnimatedSection delay={0.2}>
-            <p className="text-center text-lg mb-12 text-gray-600 max-w-4xl mx-auto">
-              Nestled within the expansive landscape of Global City, Amavi 303 is a private haven that
-              combines serenity with luxury. Inspired by the Latin phrase "Veni, Vidi, Amavi" —
-              meaning "I came, I saw, I loved" - Amavi 303 offers an escape from the chaos of city life,
-              while still being surrounded by modern comforts and conveniences.
-            </p>
-          </AnimatedSection>
-        
-        </div>
-      </section>
-
-     
-     
-    
-    <section ref={servicesRef} className="py-12 md:py-20 relative overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img
-            src={photo}
-            alt="Background"
-            className="w-full h-full object-cover filter brightness-50"
-          />
-        </div>
-        <div className="container mx-auto px-4 md:px-0 relative z-10">
-          <h2 className="text-3xl font-bold text-center mb-6 md:mb-4 text-white">CONFIGURATIONS</h2>
-          <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 max-w-3xl mx-auto">
-            {configurationData.map((config, index) => (
-              <div
-                key={index}
-                className="bg-white bg-opacity-90 backdrop-filter backdrop-blur-lg p-4 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 flex flex-col justify-between"
-              >
-                <div>
-                  <h3 className="text-2xl md:text-3xl font-bold mb-2 text-orange-500">{config.type}</h3>
-                  <p className="text-lg md:text-xl text-gray-700 mb-3">{config.size}</p>
-                </div>
-                <button
-                  onClick={() => openPopup('Check Price')}
-                  className="w-full bg-green-800 text-white py-2 px-4 rounded-md text-base md:text-lg font-semibold hover:bg-green-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
-                >
-                  ₹ CHECK PRICE
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <GallerySection />
-
-      <section ref={amenitiesRef} className="py-16 px-4 md:px-0 bg-orange-50">
-        <div className="container mx-auto">
-          <AnimatedSection>
-            <h2 className="text-4xl font-bold text-center mb-4 text-gray-800 ">AMENITIES</h2>
-            <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-          </AnimatedSection>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {amenities.map((amenity, index) => (
-              <AnimatedSection key={amenity.name} delay={0.1 * (index + 1)}>
-                <div className="bg-white p-4 rounded-lg shadow-md transition-transform hover:scale-105 flex flex-col items-center justify-center h-full">
-                  {React.createElement(amenity.icon, {
-                    className: "w-10 h-10 mb-3 text-orange-500"
-                  })}
-                  <h3 className="text-sm sm:text-base font-semibold text-center text-gray-800">{amenity.name}</h3>
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
-        </div>
-      </section>
-      <section ref={connectivityRef} className="py-16 px-4 md:px-0 bg-gradient-to-b from-white to-orange-50">
-        <div className="container mx-auto">
-          <AnimatedSection>
-            <h2 className="text-4xl font-bold text-center mb-5 text-gray-800">CONNECTIVITY</h2>
-            <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-          </AnimatedSection>3
-          <div className="flex flex-col md:flex-row gap-8">
-            <div className="md:w-1/2 bg-white p-6 rounded-lg shadow-lg">
-              <AnimatedSection delay={0.2}>
-                {connectivityData.map((item, index) => (
-                  <ConnectivityItem key={index} title={item.title} items={item.items} />
-                ))}
-              </AnimatedSection>
-            </div>
-            <div className="md:w-1/2">
-              <AnimatedSection delay={0.4}>
-                <div className="bg-white p-2 rounded-lg shadow-lg">
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3812603.289104417!2d70.06668495000002!3d21.062858779307554!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7a9017646de67%3A0x8a68bd52908884e9!2sEvershine%20Amavi%20303!5e0!3m2!1sen!2sin!4v1728989322507!5m2!1sen!2sin"
-                    width="100%"
-                    height="400"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="Evershine Amavi Location"
-                    className="rounded-lg"
-                  ></iframe>
-                </div>
-              </AnimatedSection>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section ref={aboutUsRef} className="py-20 px-4 md:px-0 bg-white">
-        <div className="container mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-4 text-gray-800">ABOUT US</h2>
-          <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-          <div className="max-w-3xl mx-auto text-center">
-            <p className="text-lg mb-6 text-gray-600">
-              Founded in 1960, Evershine Group has established a legacy of values through the creation of
-              infrastructure. For over six decades, we have aimed to exceed our promises by delivering more than
-              what we commit. We have focused on offering middle-income families an aspirational lifestyle, with
-              homes designed to blend nature with modern living. Our developments are rich in greenery and feature
-              an array of lifestyle and recreational amenities, making us one of Mumbai's most trusted and leading real
-              estate developers.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section ref={contactUsRef} className="py-20 px-4 md:px-0 bg-gradient-to-b from-orange-100 to-orange-200 text-gray-800">
-        <div className="container mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-4 text-orange-600">Contact Us</h2>
-          <p className="text-center text-lg mb-12 max-w-2xl mx-auto">
-            Get in touch with us to learn more about our projects or to schedule a visit to our sample flat.
+      <main>
+        <section className="container mx-auto px-4 py-20 text-center">
+          <h2 className={`text-4xl md:text-6xl font-bold mb-6 text-[#493628] transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+            Smart Inventory Management for Sustainable Retail
+          </h2>
+          <p className={`text-xl mb-8 text-[#493628] transition-opacity duration-1000 delay-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+            Reduce waste, optimize stock, and boost sustainability with Fresh Finds
           </p>
-          <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg border border-orange-300">
-            <form className="space-y-4">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-                <input type="text" id="name" name="name" className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
-              </div>
-              <div>
-                <label htmlFor="mobile" className="block text-sm font-medium text-gray-700">Mobile</label>
-                <input type="tel" id="mobile" name="mobile" className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
-              </div>
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                <input type="email" id="email" name="email" className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
-              </div>
-              <div>
-                <button type="submit" className="w-full bg-orange-500 text-white py-2 px-4 rounded-md font-semibold hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
-                  Submit
-                </button>
-              </div>
-            </form>
-          </div>
-          <div className="mt-12 text-center">
-            <p className="text-lg font-semibold mb-2">Site Address</p>
-            <p className="text-orange-600 mt-1 mb-3">Evershine Global City, Avenue I1, Virar (West), Maharashtra 401303</p>
-            <p>+91 8828309719 / +91 9096669171</p>
-          </div>
-        </div>
-      </section>
+          <a href="#contact" className={`inline-block bg-[#AB886D] text-white px-8 py-3 rounded-full font-semibold hover:bg-[#493628] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+            Get Started
+            <ChevronRight className="inline ml-2" />
+          </a>
+        </section>
 
-      <footer className="bg-white text-gray-800 py-8">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
-            <div className="md:w-1/4"></div>
-            <div className="text-center md:w-2/4 max-w-md">
-              <p className="text-sm font-semibold" >
-                MahaRERA No.: P51800056477 and is available on the website https://maharera.mahaonline.gov.in under registered projects | *T&C Apply.
-              </p>
-              <button
-                className="mt-2 text-sm underline cursor-pointer hover:text-orange-500 transition-colors"
-                onClick={() => openPopup('Disclaimer')}
-              >
-                Disclaimer
-              </button>
-            </div>
-            <div className="flex space-x-4 md:w-1/4">
-              <div className="flex flex-col items-center">
-                <img src={qrCode1} alt="Evershine Amavi Phase 1 QR Code" className="w-20 h-20" />
-                <p className="mt-1 text-xs">Phase 1</p>
-              </div>
-              <div className="flex flex-col items-center">
-                <img src={qrCode2} alt="Evershine Amavi Phase 2 QR Code" className="w-20 h-20" />
-                <p className="mt-1 text-xs">Phase 2</p>
-              </div>
-              <div className="flex flex-col items-center">
-                <img src={qrCode3} alt="Evershine Amavi Phase 3 QR Code" className="w-20 h-20" />
-                <p className="mt-1 text-xs">Phase 3</p>
-              </div>
+        <section id="features" className="bg-white py-20">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-[#493628]">Key Features</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {[
+                { icon: BarChart2, title: "Real-time Tracking", description: "Monitor your inventory levels as they change" },
+                { icon: TrendingUp, title: "Smart Forecasting", description: "Predict future inventory needs based on data" },
+                { icon: AlertTriangle, title: "Waste Alerts", description: "Get notified about potential overstocking or expiring products" },
+                { icon: Leaf, title: "Sustainability Metrics", description: "Track and improve your environmental impact" }
+              ].map((feature, index) => (
+                <div key={index} className="bg-[#E4E0E1] p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                  <feature.icon className="w-12 h-12 text-[#AB886D] mb-4" />
+                  <h3 className="text-xl font-semibold mb-2 text-[#493628]">{feature.title}</h3>
+                  <p className="text-[#493628]">{feature.description}</p>
+                </div>
+              ))}
             </div>
           </div>
-          <div className="mt-6 text-center">
-            <p className="text-sm">&copy; {new Date().getFullYear()} Evershine Amavi. All rights reserved.</p>
+        </section>
+
+        <section id="how-it-works" className="py-20 bg-gradient-to-b from-[#D6C0B3] to-[#E4E0E1]">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-[#493628]">How It Works</h2>
+            <div className="flex flex-col md:flex-row justify-center items-center space-y-8 md:space-y-0 md:space-x-8">
+              {[
+                { step: 1, title: "Connect Your Systems", description: "Integrate Fresh Finds with your existing POS and inventory systems" },
+                { step: 2, title: "Analyze & Optimize", description: "Our AI analyzes your data to provide actionable insights" },
+                { step: 3, title: "Reduce Waste", description: "Implement recommendations to minimize waste and maximize efficiency" }
+              ].map((item, index) => (
+                <div key={index} className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 w-full md:w-1/3">
+                  <div className="text-3xl font-bold text-[#AB886D] mb-4">Step {item.step}</div>
+                  <h3 className="text-xl font-semibold mb-2 text-[#493628]">{item.title}</h3>
+                  <p className="text-[#493628]">{item.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="benefits" className="py-20 bg-[#493628] text-white">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">Benefits</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[
+                { icon: DollarSign, title: "Reduce Costs", description: "Minimize waste and optimize inventory to save money" },
+                { icon: Leaf, title: "Boost Sustainability", description: "Decrease your environmental footprint" },
+                { icon: TrendingUp, title: "Increase Efficiency", description: "Streamline operations with data-driven insights" }
+              ].map((benefit, index) => (
+                <div key={index} className="bg-[#AB886D] p-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                  <benefit.icon className="w-12 h-12 text-white mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">{benefit.title}</h3>
+                  <p>{benefit.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="contact" className="py-20 bg-gradient-to-b from-[#E4E0E1] to-[#D6C0B3]">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-8 text-[#493628]">Ready to Optimize Your Inventory?</h2>
+            <p className="text-xl mb-8 text-[#493628]">Get in touch with us to learn how Fresh Finds can transform your retail operations</p>
+            <a href="#" className="inline-block bg-[#AB886D] text-white px-8 py-3 rounded-full font-semibold hover:bg-[#493628] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+              Contact Us
+              <ChevronRight className="inline ml-2" />
+            </a>
+          </div>
+        </section>
+      </main>
+
+      <footer className="bg-[#493628] text-white py-8">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="mb-4 md:mb-0">
+              <h2 className="text-2xl font-bold">Fresh Finds</h2>
+              <p className="text-sm">Smart Inventory Management</p>
+            </div>
+            <nav className="flex flex-wrap justify-center md:justify-end space-x-4">
+              <a href="#features" className="hover:text-[#AB886D] transition-colors">Features</a>
+              <a href="#how-it-works" className="hover:text-[#AB886D] transition-colors">How It Works</a>
+              <a href="#benefits" className="hover:text-[#AB886D] transition-colors">Benefits</a>
+              <a href="#contact" className="hover:text-[#AB886D] transition-colors">Contact</a>
+            </nav>
+          </div>
+          <div className="mt-8 text-center text-sm">
+            &copy; {new Date().getFullYear()} Fresh Finds. All rights reserved.
           </div>
         </div>
       </footer>
-
-      {/* Contact buttons */}
-      <motion.button
-        className="fixed bottom-4 left-4 bg-orange-500 text-white px-4 py-2 rounded-md shadow-lg hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 z-50 font-semibold"
-        onClick={() => openPopup('Download Brochure')}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        Download Brochure
-      </motion.button>
-      <motion.button
-        className="fixed bottom-4 right-4 bg-orange-500 text-white px-4 py-2 rounded-md shadow-lg hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 z-50 font-semibold"
-        onClick={() => openPopup('Enquire Now')}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        Enquire Now
-      </motion.button>
-
-      {/* Contact Popup */}
-      <ContactPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} title={popupTitle} />
     </div>
   )
 }
-
-export default LandingPage
