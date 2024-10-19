@@ -6,7 +6,7 @@ import { useInView } from 'react-intersection-observer'
 import { Trees, School, Users, Dumbbell, Waves, Utensils, LandPlot, Gamepad, Heart, ChevronDown, ChevronLeft, ChevronRight, Menu } from 'lucide-react'
 import photo from './builder.jpg'
 import logo from './Evershine Builder logo 1200x1200-01(2).png'
-import logo2 from './Evershine Amavi logo-01.jpg'
+import logo2 from './Evershine Amavi-01 logo.png'
 import desktopBanner from './11zon_resized.jpg'
 import mobileBanner from './Amavi_Mobile 500x800 1.jpg'
 import qrCode1 from './Eevershine-Amavi-Phase-1.webp'
@@ -294,18 +294,16 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white font-sans">
       <motion.header
-        className="fixed top-0 left-0 right-0 z-50 bg-white bg-opacity-90 text-gray-800 py-0 shadow-md"
+        className="fixed top-0 left-0 right-0 z-50 bg-white bg-opacity-90 text-gray-800 py-0 shadow-mdd"
         initial={{ opacity: 1, y: 0 }}
         animate={{ opacity: isHeaderVisible ? 1 : 0, y: isHeaderVisible ? 0 : -100 }}
         transition={{ duration: 0.3 }}
       >
         <div className="container mx-auto px-4 flex justify-between items-center">
-          <img src={logo2} alt="Evershine Amavi Logo" className="h-16" />
+          <img src={logo2} alt="Evershine Amavi Logo" className="h-20" />
           <nav className="hidden md:block">
-            <ul className="flex space-x-6 items-center">
-              <li>
-                <img src={logo} alt="Evershine Amavi Logo" className="h-16" />
-              </li>
+            <ul className="flex space-x-11 items-center">
+              
               <li>
                 <button onClick={() => scrollToSection(overviewRef)} className="text-gray-800 hover:text-orange-500 transition-colors">
                   Overview
@@ -335,6 +333,10 @@ const LandingPage = () => {
                 <button onClick={() => scrollToSection(contactUsRef)} className="text-gray-800 hover:text-orange-500 transition-colors">
                   Contact Us
                 </button>
+                
+              </li>
+              <li>
+                <img src={logo} alt="Evershine Amavi Logo" className="h-16" />
               </li>
             </ul>
           </nav>
@@ -409,45 +411,14 @@ const LandingPage = () => {
               while still being surrounded by modern comforts and conveniences.
             </p>
           </AnimatedSection>
-          <AnimatedSection delay={0.4}>
-            <div className="relative mt-12 bg-orange-50 rounded-lg shadow-lg p-8 h-[300px]">
-              <AnimatePresence initial={false} custom={direction} mode="wait">
-                <motion.div
-                  key={currentOverviewSlide}
-                  custom={direction}
-                  variants={slideVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  className="absolute inset-0 flex flex-col justify-center items-center p-8"
-                >
-                  <h3 className="text-2xl font-bold mb-4 text-gray-800">{overviewSlides[currentOverviewSlide].title}</h3>
-                  <p className="text-gray-600 text-lg text-center">{overviewSlides[currentOverviewSlide].description}</p>
-                </motion.div>
-              </AnimatePresence>
-              <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-4">
-                <button
-                  className="bg-orange-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
-                  onClick={prevSlide}
-                >
-                  <ChevronLeft className="w-6 h-6" />
-                </button>
-                <button
-                  className="bg-orange-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
-                  onClick={nextSlide}
-                >
-                  <ChevronRight className="w-6 h-6" />
-                </button>
-              </div>
-            </div>
-          </AnimatedSection>
+        
         </div>
       </section>
 
      
      
     
-      <section ref={servicesRef} className="py-16 md:py-24 relative overflow-hidden">
+    <section ref={servicesRef} className="py-12 md:py-20 relative overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
             src={photo}
@@ -456,20 +427,21 @@ const LandingPage = () => {
           />
         </div>
         <div className="container mx-auto px-4 md:px-0 relative z-10">
-          <h2 className="text-3xl font-bold text-center mb-8 md:mb-12 text-white underline">CONFIGURATIONS</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8 max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-6 md:mb-4 text-white">CONFIGURATIONS</h2>
+          <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 max-w-3xl mx-auto">
             {configurationData.map((config, index) => (
               <div
                 key={index}
-                className="bg-white bg-opacity-90 backdrop-filter backdrop-blur-lg p-4 md:p-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 flex flex-col justify-between"
+                className="bg-white bg-opacity-90 backdrop-filter backdrop-blur-lg p-4 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 flex flex-col justify-between"
               >
                 <div>
-                  <h3 className="text-3xl md:text-4xl font-bold mb-2 md:mb-4 text-orange-500">{config.type}</h3>
-                  <p className="text-xl md:text-2xl text-gray-700 mb-4 md:mb-6">{config.size}</p>
+                  <h3 className="text-2xl md:text-3xl font-bold mb-2 text-orange-500">{config.type}</h3>
+                  <p className="text-lg md:text-xl text-gray-700 mb-3">{config.size}</p>
                 </div>
                 <button
                   onClick={() => openPopup('Check Price')}
-                  className="w-full bg-green-800 text-white py-2 md:py-3 px-4 md:px-5 rounded-md text-lg md:text-xl font-semibold hover:bg-green-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                  className="w-full bg-green-800 text-white py-2 px-4 rounded-md text-base md:text-lg font-semibold hover:bg-green-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
                 >
                   ₹ CHECK PRICE
                 </button>
@@ -484,7 +456,8 @@ const LandingPage = () => {
       <section ref={amenitiesRef} className="py-16 px-4 md:px-0 bg-orange-50">
         <div className="container mx-auto">
           <AnimatedSection>
-            <h2 className="text-4xl font-bold text-center mb-8 text-gray-800">Amenities</h2>
+            <h2 className="text-4xl font-bold text-center mb-4 text-gray-800 ">AMENITIES</h2>
+            <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
           </AnimatedSection>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {amenities.map((amenity, index) => (
@@ -500,13 +473,14 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-      <section ref={connectivityRef} className="py-24 px-4 md:px-0 bg-gradient-to-b from-white to-orange-50">
+      <section ref={connectivityRef} className="py-16 px-4 md:px-0 bg-gradient-to-b from-white to-orange-50">
         <div className="container mx-auto">
           <AnimatedSection>
-            <h2 className="text-6xl font-bold text-center mb-20 text-gray-800">Connectivity</h2>
-          </AnimatedSection>
-          <div className="flex flex-col md:flex-row gap-16">
-            <div className="md:w-1/2 bg-white p-10 rounded-lg shadow-lg">
+            <h2 className="text-4xl font-bold text-center mb-5 text-gray-800">CONNECTIVITY</h2>
+            <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
+          </AnimatedSection>3
+          <div className="flex flex-col md:flex-row gap-8">
+            <div className="md:w-1/2 bg-white p-6 rounded-lg shadow-lg">
               <AnimatedSection delay={0.2}>
                 {connectivityData.map((item, index) => (
                   <ConnectivityItem key={index} title={item.title} items={item.items} />
@@ -515,11 +489,11 @@ const LandingPage = () => {
             </div>
             <div className="md:w-1/2">
               <AnimatedSection delay={0.4}>
-                <div className="bg-white p-4 rounded-lg shadow-lg">
+                <div className="bg-white p-2 rounded-lg shadow-lg">
                   <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3812603.289104417!2d70.06668495000002!3d21.062858779307554!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7a9017646de67%3A0x8a68bd52908884e9!2sEvershine%20Amavi%20303!5e0!3m2!1sen!2sin!4v1728989322507!5m2!1sen!2sin"
                     width="100%"
-                    height="600"
+                    height="400"
                     style={{ border: 0 }}
                     allowFullScreen
                     loading="lazy"
@@ -536,7 +510,8 @@ const LandingPage = () => {
 
       <section ref={aboutUsRef} className="py-20 px-4 md:px-0 bg-white">
         <div className="container mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-8 text-gray-800">ABOUT US</h2>
+          <h2 className="text-4xl font-bold text-center mb-4 text-gray-800">ABOUT US</h2>
+          <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
           <div className="max-w-3xl mx-auto text-center">
             <p className="text-lg mb-6 text-gray-600">
               Founded in 1960, Evershine Group has established a legacy of values through the creation of
@@ -588,7 +563,19 @@ const LandingPage = () => {
       <footer className="bg-white text-gray-800 py-8">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
-            <div className="flex space-x-4">
+            <div className="md:w-1/4"></div>
+            <div className="text-center md:w-2/4 max-w-md">
+              <p className="text-sm font-semibold" >
+                MahaRERA No.: P51800056477 and is available on the website https://maharera.mahaonline.gov.in under registered projects | *T&C Apply.
+              </p>
+              <button
+                className="mt-2 text-sm underline cursor-pointer hover:text-orange-500 transition-colors"
+                onClick={() => openPopup('Disclaimer')}
+              >
+                Disclaimer
+              </button>
+            </div>
+            <div className="flex space-x-4 md:w-1/4">
               <div className="flex flex-col items-center">
                 <img src={qrCode1} alt="Evershine Amavi Phase 1 QR Code" className="w-20 h-20" />
                 <p className="mt-1 text-xs">Phase 1</p>
@@ -601,17 +588,6 @@ const LandingPage = () => {
                 <img src={qrCode3} alt="Evershine Amavi Phase 3 QR Code" className="w-20 h-20" />
                 <p className="mt-1 text-xs">Phase 3</p>
               </div>
-            </div>
-            <div className="text-center md:text-left max-w-md">
-              <p className="text-sm">
-                MahaRERA No.: P51800056477 and is available on the website https://maharera.mahaonline.gov.in under registered projects | *T&C Apply.
-              </p>
-              <button
-                className="mt-2 text-sm underline cursor-pointer hover:text-orange-500 transition-colors"
-                onClick={() => openPopup('Disclaimer')}
-              >
-                Disclaimer
-              </button>
             </div>
           </div>
           <div className="mt-6 text-center">
