@@ -7,8 +7,6 @@ import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from 'lucide-react'
 // Import your images here
 import exterior1 from './builder.jpg'
 import exterior2 from './Elevation Warm (1).jpg'
-import interior1 from './image00002.jpeg'
-
 import amenities1 from './2.jpg'
 import amenities2 from './4.jpg'
 import amenities3 from './5.jpg'
@@ -20,12 +18,11 @@ import floorPlan4 from './WhatsApp Image 2024-10-19 at 20.42.22.jpeg'
 
 const sections = [
   { name: 'Exterior', images: [exterior1, exterior2] },
-  { name: 'Interior', images: [interior1] },
   { name: 'Amenities', images: [amenities1, amenities2, amenities3, amenities4] },
   { name: 'Floor Plan', images: [floorPlan1, floorPlan2, floorPlan3, floorPlan4] },
 ]
 
-const GallerySection: React.FC = () => {
+export default function GallerySection() {
   const [activeSection, setActiveSection] = useState(0)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isZoomed, setIsZoomed] = useState(false)
@@ -58,11 +55,11 @@ const GallerySection: React.FC = () => {
         <h2 className="text-4xl font-bold text-center mb-4 text-gray-800">GALLERY</h2>
         <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
         
-        <div className="flex justify-center mb-8">
+        <div className="flex flex-wrap justify-center mb-8">
           {sections.map((section, index) => (
             <button
               key={section.name}
-              className={`px-4 py-2 mx-2 rounded-md ${
+              className={`px-4 py-2 m-2 rounded-md ${
                 activeSection === index
                   ? 'bg-orange-500 text-white'
                   : 'bg-gray-200 text-gray-800'
@@ -83,18 +80,18 @@ const GallerySection: React.FC = () => {
             {activeSection === 0 ? (
               <motion.div
                 key="exterior"
-                className="flex"
+                className="flex flex-col md:flex-row"
                 initial="hidden"
                 animate="visible"
                 exit="exit"
                 variants={slideVariants}
               >
                 {sections[0].images.map((image, index) => (
-                  <div key={index} className="relative overflow-hidden rounded-lg w-1/2 p-2">
+                  <div key={index} className="relative overflow-hidden rounded-lg w-full md:w-1/2 p-2">
                     <img
                       src={image}
                       alt={`Exterior ${index + 1}`}
-                      className="w-full h-[400px] object-cover transition-all duration-300 hover:scale-105"
+                      className="w-full h-[200px] md:h-[400px] object-cover transition-all duration-300 hover:scale-105"
                     />
                   </div>
                 ))}
@@ -106,7 +103,7 @@ const GallerySection: React.FC = () => {
                   src={sections[activeSection].images[currentIndex]}
                   alt={`${sections[activeSection].name} image ${currentIndex + 1}`}
                   className={`w-full transition-all duration-300 ${
-                    isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in h-[400px] object-cover hover:scale-105'
+                    isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in h-[200px] md:h-[400px] object-cover hover:scale-105'
                   }`}
                   style={isZoomed ? { height: 'auto', maxHeight: '80vh', objectFit: 'contain' } : {}}
                   initial="hidden"
@@ -162,5 +159,3 @@ const GallerySection: React.FC = () => {
     </section>
   )
 }
-
-export default GallerySection
