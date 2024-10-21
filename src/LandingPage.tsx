@@ -3,7 +3,7 @@
 import React, { ReactNode, useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, useAnimation, useScroll } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { Trees, School, Users, Dumbbell, Waves, Utensils, LandPlot, Gamepad, Heart, ChevronDown, ChevronLeft, ChevronRight, Menu } from 'lucide-react'
+import { Trees, School, Users, Dumbbell, Waves, Utensils, LandPlot, Gamepad, Heart, ChevronDown, ChevronLeft, ChevronRight, Menu,Baby } from 'lucide-react'
 import photo from './builder.jpg'
 import logo from './Evershine Builder logo 1200x1200-01(2).png'
 import logo2 from './Evershine Amavi-01 logo.png'
@@ -15,6 +15,7 @@ import qrCode3 from './Eevershine-Amavi-Phase-3.webp'
 import ContactPopup from './ContactUsPopup'
 import GallerySection from './GallerySection'
 import DisclaimerPopup from './DisclaimerPopup'
+import connectivityMap from './WhatsApp Image 2024-10-21 at 17.59.17.jpeg'
 
 interface AnimatedSectionProps {
   children: ReactNode
@@ -60,45 +61,126 @@ interface ConnectivityItemProps {
   title: string
   items: Item[]
 }
-
 const ConnectivityItem: React.FC<ConnectivityItemProps> = ({ title, items }) => {
   const [isOpen, setIsOpen] = useState(false)
 
-  return (
-    <div className="mb-4 border-b border-orange-200 pb-2">
-      <button
-        className="flex justify-between items-center w-full text-left font-semibold text-lg text-gray-800 hover:text-orange-500 transition-all duration-300 ease-in-out"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        {title}
-        <motion.div
-          animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.3 }}
+
+    return (
+      <div className="border-b border-orange-200 last:border-b-0">
+        <button
+          className="flex justify-between items-center w-full text-left font-semibold text-lg text-gray-800 hover:text-orange-500 transition-all duration-300 ease-in-out py-2"
+          onClick={() => setIsOpen(!isOpen)}
         >
-          <ChevronDown className="w-5 h-5" />
-        </motion.div>
-      </button>
-      <motion.ul
-        className="mt-2 ml-4 overflow-hidden"
-        initial={{ height: 0, opacity: 0 }}
-        animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        {items.map((item, index) => (
-          <motion.li
-            key={index}
-            className="mb-2 p-2 rounded-md hover:bg-orange-50 transition-all duration-300 ease-in-out"
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
+          {title}
+          <motion.div
+            animate={{ rotate: isOpen ? 180 : 0 }}
+            transition={{ duration: 0.3 }}
           >
-            <span className="font-medium text-gray-800">{item.name}</span>
-            <span className="text-sm text-gray-600 ml-2">
-              {item.distance} | {item.time}
-            </span>
-          </motion.li>
-        ))}
-      </motion.ul>
+            <ChevronDown className="w-5 h-5" />
+          </motion.div>
+        </button>
+        <AnimatePresence initial={false}>
+          {isOpen && (
+            <motion.ul
+              className="mt-2 ml-4"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {items.map((item, index) => (
+                <motion.li
+                  key={index}
+                  className="mb-2 last:mb-0 p-2 rounded-md hover:bg-orange-50 transition-all duration-300 ease-in-out"
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                >
+                  <span className="font-medium text-gray-800">{item.name}</span>
+                  <span className="text-sm text-gray-600 ml-2">
+                    {item.distance} | {item.time}
+                  </span>
+                </motion.li>
+              ))}
+            </motion.ul>
+          )}
+        </AnimatePresence>
+      </div>
+    )
+
+}
+
+
+const AnimatedCounter = ({ end, duration = 2 }) => {
+  const [count, setCount] = useState(0)
+  const countRef = useRef(0)
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  })
+
+  useEffect(() => {
+    if (inView) {
+      const startTime = Date.now()
+      const timer = setInterval(() => {
+        const timePassed = Date.now() - startTime
+        const progress = Math.min(timePassed / (duration * 1000), 1)
+        countRef.current = Math.floor(end * progress)
+        setCount(countRef.current)
+
+        if (progress === 1) {
+          clearInterval(timer)
+        }
+      }, 50)
+
+      return () => clearInterval(timer)
+    }
+  }, [inView, end, duration])
+
+  const formatNumber = (num) => {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  }
+
+  return (
+    <div ref={ref} className="relative">
+      <motion.div
+        className="text-6xl font-bold text-orange-600"
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        {formatNumber(count)}
+        <span className="text-4xl">+</span>
+      </motion.div>
+      <motion.div
+        className="absolute top-0 left-0 w-full h-full flex items-center justify-center"
+        initial={{ opacity: 1 }}
+        animate={{ opacity: 0 }}
+        transition={{ duration: 2, ease: "easeOut" }}
+      >
+        <svg className="w-full h-full" viewBox="0 0 100 100">
+          <circle
+            cx="50"
+            cy="50"
+            r="45"
+            fill="none"
+            stroke="#FFA500"
+            strokeWidth="8"
+            strokeDasharray="283"
+            strokeDashoffset="283"
+          >
+            <animate
+              attributeName="stroke-dashoffset"
+              from="283"
+              to="0"
+              dur="2s"
+              fill="freeze"
+              calcMode="spline"
+              keySplines="0.42 0 0.58 1"
+            />
+          </circle>
+        </svg>
+      </motion.div>
     </div>
   )
 }
@@ -118,6 +200,35 @@ const LandingPage = () => {
   const connectivityRef = useRef(null)
   const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false)
 
+  const Counter = ({ end, duration = 2 }) => {
+    const [count, setCount] = useState(0)
+    const countRef = useRef(0)
+    const [ref, inView] = useInView({
+      triggerOnce: true,
+      threshold: 0.1,
+    })
+  
+    useEffect(() => {
+      if (inView) {
+        const startTime = Date.now()
+        const timer = setInterval(() => {
+          const timePassed = Date.now() - startTime
+          const progress = Math.min(timePassed / (duration * 1000), 1)
+          countRef.current = Math.floor(end * progress)
+          setCount(countRef.current)
+  
+          if (progress === 1) {
+            clearInterval(timer)
+          }
+        }, 50)
+  
+        return () => clearInterval(timer)
+      }
+    }, [inView, end, duration])
+  
+    return <span ref={ref}>{count.toLocaleString()}+</span>
+  }
+  
   useEffect(() => {
     return scrollY.onChange((latest) => {
       const previous = scrollY.getPrevious() ?? 0
@@ -168,14 +279,18 @@ const LandingPage = () => {
     { name: "Banquet Hall", icon: Utensils },
     { name: "Siddhivinayak Temple", icon: LandPlot },
     { name: "Yoga Center", icon: Heart },
+
+  
+    { name: "Children's Play Area", icon: Baby },
+   
     { name: "Board Games and Lot more!", icon: Gamepad }
   ]
-
   const configurationData = [
-    { type: "1BHK", size: "395 sq ft" },
-    { type: "1BHK Premium", size: "435 sq ft" },
-    { type: "2BHK", size: "535 sq ft" },
-    { type: "2BHK Premium", size: "612 sq ft" },
+    { typology: "1 BHK", area: "395 Sq. fit", price: "Click Here" },
+    { typology: "1 BHK Premium", area: "435 Sq. ft", price: "Click Here" },
+    { typology: "2 BHK", area: "545 Sq. ft", price: "Click Here" }
+  ,
+    { typology: "2 BHK Premium", area: "612 Sq. ft", price: "Click Here" },
   ]
 
   const connectivityData = [
@@ -258,11 +373,7 @@ const LandingPage = () => {
     { title: "Luxury Apartments", description: "Opulent living spaces with modern amenities" },
   ]
 
-  const nextSlide = () => {
-    setDirection(1)
-    setCurrentOverviewSlide((prev) => (prev === overviewSlides.length - 1 ? 0 : prev + 1))
-  }
-
+ 
   const prevSlide = () => {
     setDirection(-1)
     setCurrentOverviewSlide((prev) => (prev === 0 ? overviewSlides.length - 1 : prev - 1))
@@ -294,9 +405,9 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white font-sans">
       <motion.header
-        className="fixed top-0 left-0 right-0 z-50 bg-white bg-opacity-90 text-gray-800 py-0 shadow-mdd"
+        className="fixed top-0 left-0 right-0 z-50 bg-white  text-gray-800 py-0 shadow-mdd"
         initial={{ opacity: 1, y: 0 }}
-        animate={{ opacity: isHeaderVisible ? 1 : 0, y: isHeaderVisible ? 0 : -100 }}
+       
         transition={{ duration: 0.3 }}
       >
         <div className="container mx-auto px-4 flex justify-between items-center">
@@ -336,7 +447,7 @@ const LandingPage = () => {
                 
               </li>
               <li>
-                <img src={logo} alt="Evershine Amavi Logo" className="h-16" />
+                <img src={logo} alt="Evershine Amavi Logo" className="h-20" />
               </li>
             </ul>
           </nav>
@@ -397,28 +508,29 @@ const LandingPage = () => {
         )}
       </section>
 
-      <section ref={overviewRef} className="py-20 px-4 md:px-0 bg-white">
-        <div className="container mx-auto">
-          <AnimatedSection>
-            <h2 className="text-4xl font-bold text-center mb-4 text-gray-800">OVERVIEW</h2>
-            <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-          </AnimatedSection>
-          <AnimatedSection delay={0.2}>
-            <p className="text-center text-lg mb-12 text-gray-600 max-w-4xl mx-auto">
+      <section id="overview" className="py-16 md:py-24 bg-white">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimatedSection>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-gray-800">OVERVIEW</h2>
+          <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
+        </AnimatedSection>
+        <AnimatedSection delay={0.2}>
+          <div className="max-w-4xl mx-auto text-center">
+            <p className="text-base md:text-lg text-gray-600 leading-relaxed">
               Nestled within the expansive landscape of Global City, Amavi 303 is a private haven that
               combines serenity with luxury. Inspired by the Latin phrase "Veni, Vidi, Amavi" —
               meaning "I came, I saw, I loved" - Amavi 303 offers an escape from the chaos of city life,
               while still being surrounded by modern comforts and conveniences.
             </p>
-          </AnimatedSection>
-        
-        </div>
-      </section>
-
+          </div>
+        </AnimatedSection>
+       
+      </div>
+    </section>
      
      
-    
-    <section ref={servicesRef} className="py-12 md:py-20 relative overflow-hidden">
+     
+      <section ref={servicesRef} className="py-12 md:py-20 relative overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
             src={photo}
@@ -429,27 +541,36 @@ const LandingPage = () => {
         <div className="container mx-auto px-4 md:px-0 relative z-10">
           <h2 className="text-3xl font-bold text-center mb-6 md:mb-4 text-white">CONFIGURATIONS</h2>
           <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 max-w-3xl mx-auto">
-            {configurationData.map((config, index) => (
-              <div
-                key={index}
-                className="bg-white bg-opacity-90 backdrop-filter backdrop-blur-lg p-4 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 flex flex-col justify-between"
-              >
-                <div>
-                  <h3 className="text-2xl md:text-3xl font-bold mb-2 text-orange-500">{config.type}</h3>
-                  <p className="text-lg md:text-xl text-gray-700 mb-3">{config.size}</p>
-                </div>
-                <button
-                  onClick={() => openPopup('Check Price')}
-                  className="w-full bg-green-800 text-white py-2 px-4 rounded-md text-base md:text-lg font-semibold hover:bg-green-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
-                >
-                  ₹ CHECK PRICE
-                </button>
-              </div>
-            ))}
+          <div className="max-w-5xl mx-auto bg-white bg-opacity-90 backdrop-filter backdrop-blur-lg rounded-lg shadow-lg overflow-hidden">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-orange-500 text-white">
+                  <th className="py-4 px-6 text-left border-r border-white">Typology</th>
+                  <th className="py-4 px-6 text-left border-r border-white">RERA Carpet Area (Sq.Ft.)</th>
+                  <th className="py-4 px-6 text-left">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {configurationData.map((config, index) => (
+                  <tr key={index} className="border-b border-orange-200 last:border-b-0">
+                    <td className="py-4 px-6 border-r border-orange-200">{config.typology}</td>
+                    <td className="py-4 px-6 border-r border-orange-200">{config.area}</td>
+                    <td className="py-4 px-6">
+                      <button
+                        onClick={() => openPopup('Check Price')}
+                        className="text-orange-500 hover:text-orange-600 font-semibold transition-colors duration-300"
+                      >
+                        {config.price}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
+
 
       <GallerySection />
 
@@ -478,36 +599,32 @@ const LandingPage = () => {
           <AnimatedSection>
             <h2 className="text-4xl font-bold text-center mb-5 text-gray-800">CONNECTIVITY</h2>
             <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-          </AnimatedSection>3
+          </AnimatedSection>
           <div className="flex flex-col md:flex-row gap-8">
             <div className="md:w-1/2 bg-white p-6 rounded-lg shadow-lg">
               <AnimatedSection delay={0.2}>
-                {connectivityData.map((item, index) => (
-                  <ConnectivityItem key={index} title={item.title} items={item.items} />
-                ))}
+                <div className="space-y-4 max-h-[600px] overflow-y-auto">
+                  {connectivityData.map((item, index) => (
+                    <ConnectivityItem key={index} title={item.title} items={item.items} />
+                  ))}
+                </div>
               </AnimatedSection>
             </div>
             <div className="md:w-1/2">
               <AnimatedSection delay={0.4}>
-                <div className="bg-white p-2 rounded-lg shadow-lg">
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3812603.289104417!2d70.06668495000002!3d21.062858779307554!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7a9017646de67%3A0x8a68bd52908884e9!2sEvershine%20Amavi%20303!5e0!3m2!1sen!2sin!4v1728989322507!5m2!1sen!2sin"
-                    width="100%"
-                    height="400"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="Evershine Amavi Location"
-                    className="rounded-lg"
-                  ></iframe>
+                <div className="bg-white p-2 rounded-lg shadow-lg h-full">
+                  <img
+                    src={connectivityMap}
+                    alt="Evershine Amavi Location Map"
+                    className="w-full h-500px object-cover rounded-lg"
+                  />
                 </div>
               </AnimatedSection>
             </div>
           </div>
         </div>
       </section>
-
+      
       <section ref={aboutUsRef} className="py-20 px-4 md:px-0 bg-white">
         <div className="container mx-auto">
           <h2 className="text-4xl font-bold text-center mb-4 text-gray-800">ABOUT US</h2>
@@ -522,6 +639,75 @@ const LandingPage = () => {
               estate developers.
             </p>
           </div>
+          <div className="mt-16">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <AnimatedSection delay={0.2}>
+                <motion.div
+                  className="text-center p-6 bg-orange-100 rounded-lg shadow-lg"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <motion.h3
+                    className="text-4xl font-bold text-orange-600 mb-2"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                  >
+                    1960
+                  </motion.h3>
+                  <motion.p
+                    className="text-gray-700"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.4 }}
+                  >
+                    Our Journey
+                  </motion.p>
+                </motion.div>
+              </AnimatedSection>
+              <AnimatedSection delay={0.4}>
+                <motion.div
+                  className="text-center p-6 bg-orange-100 rounded-lg shadow-lg"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <AnimatedCounter end={20000} duration={2.3} />
+                  <motion.p
+                    className="text-gray-700 mt-2"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.4 }}
+                  >
+                    Happy Families
+                  </motion.p>
+                </motion.div>
+              </AnimatedSection>
+              <AnimatedSection delay={0.6}>
+                <motion.div
+                  className="text-center p-6 bg-orange-100 rounded-lg shadow-lg"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <motion.h3
+                    className="text-4xl font-bold text-orange-600 mb-2"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                  >
+                    6 Decades
+                  </motion.h3>
+                  <motion.p
+                    className="text-gray-700"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.4 }}
+                  >
+                    Since
+                  </motion.p>
+                </motion.div>
+              </AnimatedSection>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -531,31 +717,50 @@ const LandingPage = () => {
           <p className="text-center text-lg mb-12 max-w-2xl mx-auto">
             Get in touch with us to learn more about our projects or to schedule a visit to our sample flat.
           </p>
-          <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg border border-orange-300">
-            <form className="space-y-4">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-                <input type="text" id="name" name="name" className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
+          <div className="flex flex-col md:flex-row gap-8">
+            <div className="md:w-1/2">
+              <div className="bg-white p-8 rounded-lg shadow-lg border border-orange-300">
+                <form className="space-y-4">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+                    <input type="text" id="name" name="name" className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
+                  </div>
+                  <div>
+                    <label htmlFor="mobile" className="block text-sm font-medium text-gray-700">Mobile</label>
+                    <input type="tel" id="mobile" name="mobile" className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
+                  </div>
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" id="email" name="email" className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
+                  </div>
+                  <div>
+                    <button type="submit" className="w-full bg-orange-500 text-white py-2 px-4 rounded-md font-semibold hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
+                      Submit
+                    </button>
+                  </div>
+                </form>
               </div>
-              <div>
-                <label htmlFor="mobile" className="block text-sm font-medium text-gray-700">Mobile</label>
-                <input type="tel" id="mobile" name="mobile" className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
+              <div className="mt-8 text-center">
+                <p className="text-lg font-semibold mb-2">Site Address</p>
+                <p className="text-orange-600 mt-1 mb-3">Evershine Global City, Avenue I1, Virar (West), Maharashtra 401303</p>
+                <p>+91 8828309719 / +91 9096669171</p>
               </div>
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                <input type="email" id="email" name="email" className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
+            </div>
+            <div className="md:w-1/2">
+              <div className="bg-white p-2 rounded-lg shadow-lg h-full">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3812603.289104417!2d70.06668495000002!3d21.062858779307554!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7a9017646de67%3A0x8a68bd52908884e9!2sEvershine%20Amavi%20303!5e0!3m2!1sen!2sin!4v1728989322507!5m2!1sen!2sin"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0, minHeight: '400px' }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Evershine Amavi Location"
+                  className="rounded-lg"
+                ></iframe>
               </div>
-              <div>
-                <button type="submit" className="w-full bg-orange-500 text-white py-2 px-4 rounded-md font-semibold hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
-                  Submit
-                </button>
-              </div>
-            </form>
-          </div>
-          <div className="mt-12 text-center">
-            <p className="text-lg font-semibold mb-2">Site Address</p>
-            <p className="text-orange-600 mt-1 mb-3">Evershine Global City, Avenue I1, Virar (West), Maharashtra 401303</p>
-            <p>+91 8828309719 / +91 9096669171</p>
+            </div>
           </div>
         </div>
       </section>
