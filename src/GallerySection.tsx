@@ -183,9 +183,7 @@ function ImagePopup({ isOpen, onClose, image, sectionName }) {
             </button>
           </div>
           <div className="flex flex-col md:flex-row gap-6">
-            <div className="md:w-1/2">
-              <img src={image} alt={sectionName} className="w-full h-auto rounded-lg" />
-            </div>
+           
             <div className="md:w-1/2">
               <form className="space-y-4">
                 <div>

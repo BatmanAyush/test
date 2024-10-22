@@ -592,12 +592,14 @@ const LandingPage = () => {
         </div>
       </section>
       
+     
+     
       <section ref={aboutUsRef} className="py-20 px-4 md:px-0 bg-white">
         <div className="container mx-auto">
           <h2 className="text-4xl font-bold text-center mb-4 text-gray-800">ABOUT US</h2>
           <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-          <div className="max-w-3xl mx-auto text-center">
-            <p className="text-lg mb-6 text-gray-600">
+          <div className="max-w-6xl mx-auto text-center px-4 md:px-8">
+            <p className="text-lg mb-6 text-gray-600 leading-relaxed">
               Founded in 1960, Evershine Group has established a legacy of values through the creation of
               infrastructure. For over six decades, we have aimed to exceed our promises by delivering more than
               what we commit. We have focused on offering middle-income families an aspirational lifestyle, with
@@ -607,15 +609,15 @@ const LandingPage = () => {
             </p>
           </div>
           <div className="mt-16">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
               <AnimatedSection delay={0.2}>
                 <motion.div
-                  className="text-center p-6 bg-orange-100 rounded-lg shadow-lg"
+                  className="text-center p-4 bg-orange-100 rounded-lg shadow-lg h-full flex flex-col justify-between"
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
                   <motion.h3
-                    className="text-4xl font-bold text-orange-600 mb-2"
+                    className="text-3xl font-bold text-orange-600 mb-2"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
@@ -623,7 +625,7 @@ const LandingPage = () => {
                     1960
                   </motion.h3>
                   <motion.p
-                    className="text-gray-700"
+                    className="text-gray-700 mb-4"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.4 }}
@@ -634,11 +636,11 @@ const LandingPage = () => {
               </AnimatedSection>
               <AnimatedSection delay={0.4}>
                 <motion.div
-                  className="text-center p-6 bg-orange-100 rounded-lg shadow-lg"
+                  className="text-center p-4 bg-orange-100 rounded-lg shadow-lg h-full flex flex-col justify-between"
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <AnimatedCounter end={20000} duration={2.3} />
+                  <AnimatedCounter end={20000} duration={2.3} className="text-3xl" />
                   <motion.p
                     className="text-gray-700 mt-2"
                     initial={{ opacity: 0 }}
@@ -651,12 +653,12 @@ const LandingPage = () => {
               </AnimatedSection>
               <AnimatedSection delay={0.6}>
                 <motion.div
-                  className="text-center p-6 bg-orange-100 rounded-lg shadow-lg"
+                  className="text-center p-4 bg-orange-100 rounded-lg shadow-lg h-full flex flex-col justify-between"
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
                   <motion.h3
-                    className="text-4xl font-bold text-orange-600 mb-2"
+                    className="text-3xl font-bold text-orange-600 mb-2"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
@@ -664,7 +666,7 @@ const LandingPage = () => {
                     6 Decades
                   </motion.h3>
                   <motion.p
-                    className="text-gray-700"
+                    className="text-gray-700 mb-4"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.4 }}
@@ -678,9 +680,10 @@ const LandingPage = () => {
         </div>
       </section>
 
+
       <section ref={contactUsRef} className="py-20 px-4 md:px-0 bg-gradient-to-b from-orange-100 to-orange-200 text-gray-800">
         <div className="container mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-4 text-orange-600">Contact Us</h2>
+          <h2 className="text-4xl font-bold text-center mb-4 text-orange-600">CONTACT US</h2>
           <p className="text-center text-lg mb-12 max-w-2xl mx-auto">
             Get in touch with us to learn more about our projects or to schedule a visit to our sample flat.
           </p>
@@ -734,20 +737,8 @@ const LandingPage = () => {
 
       <footer className="bg-white text-gray-800 py-8">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
-            <div className="md:w-1/4"></div>
-            <div className="text-center md:w-2/4 max-w-md">
-              <p className="text-sm font-semibold" >
-                MahaRERA No.: P51800056477 and is available on the website https://maharera.mahaonline.gov.in under registered projects | *T&C Apply.
-              </p>
-              <button
-  className="mt-2 text-sm underline cursor-pointer hover:text-orange-500 transition-colors"
-  onClick={() => setIsDisclaimerOpen(true)}
->
-  Disclaimer
-</button>
-            </div>
-            <div className="flex space-x-4 md:w-1/4">
+          <div className="flex flex-col md:flex-row items-start justify-between space-y-4 md:space-y-0">
+            <div className="flex space-x-4 md:w-1/4 justify-end">
               <div className="flex flex-col items-center">
                 <img src={qrCode1} alt="Evershine Amavi Phase 1 QR Code" className="w-20 h-20" />
                 <p className="mt-1 text-xs">Phase 1</p>
@@ -761,13 +752,23 @@ const LandingPage = () => {
                 <p className="mt-1 text-xs">Phase 3</p>
               </div>
             </div>
-          </div>
-          <div className="mt-6 text-center">
-            <p className="text-sm">&copy; {new Date().getFullYear()} Evershine Amavi. All rights reserved.</p>
+            <div className="text-balance md:text-center md:w-2/4 md:max-w-full px-4 ">
+              <p className="text-sm whitespace-normal text-start w-full ">
+                This project has been registered under MahaRERA Registration No.: Phase 1 - P99000024780, Phase 2 - P99000024860 & Phase 3 - P99000024753 and is available on the website https://maharera.mahaonline.gov.in under registered projects.
+              </p>
+              <button
+                className="mt-2 text-sm underline cursor-pointer hover:text-orange-500 transition-colors"
+                onClick={() => setIsDisclaimerOpen(true)}
+              >
+                Disclaimer
+              </button>
+              <div className="mt-6 text-left md:text-center">
+                <p className="text-sm">&copy; {new Date().getFullYear()} Evershine Amavi. All rights reserved.</p>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
-
       {/* Contact buttons */}
       <motion.button
         className="fixed bottom-4 left-4 bg-orange-500 text-white px-4 py-2 rounded-md shadow-lg hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 z-50 font-semibold"
