@@ -101,7 +101,7 @@ export default function GallerySection() {
           ))}
         </div>
 
-        <div className="relative mx-auto w-full max-w-xl aspect-[16/9] overflow-hidden rounded-lg shadow-lg"> {/* Updated line */}
+        <div className="relative mx-auto w-full max-w-lg aspect-[16/9] overflow-hidden rounded-lg shadow-lg"> {/* Updated line */}
           <AnimatePresence initial={false} custom={direction}>
             <motion.div
               key={`${activeSection}-${currentIndex}`}
