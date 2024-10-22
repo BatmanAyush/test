@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from 'lucide-react'
+import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 
 // Import your images here
 import exterior1 from './builder.jpg'
@@ -25,39 +25,55 @@ const sections = [
 export default function GallerySection() {
   const [activeSection, setActiveSection] = useState(0)
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [direction, setDirection] = useState(0)
   const [isPopupOpen, setIsPopupOpen] = useState(false)
   const [selectedImage, setSelectedImage] = useState('')
-  const [isZoomed, setIsZoomed] = useState(false)
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      handleNext()
+    }, 5000) // Change image every 5 seconds
+
+    return () => clearInterval(timer)
+  }, [activeSection, currentIndex])
 
   const handleNext = () => {
+    setDirection(1)
     setCurrentIndex((prevIndex) =>
       prevIndex + 1 === sections[activeSection].images.length ? 0 : prevIndex + 1
     )
   }
 
   const handlePrevious = () => {
+    setDirection(-1)
     setCurrentIndex((prevIndex) =>
       prevIndex - 1 < 0 ? sections[activeSection].images.length - 1 : prevIndex - 1
     )
   }
 
-  const openPopup = (image: string) => {
+  const openPopup = (image) => {
     if (activeSection === 2) {
       setSelectedImage(image)
       setIsPopupOpen(true)
     }
   }
 
-  const toggleZoom = () => {
-    if (activeSection === 1) {
-      setIsZoomed(!isZoomed)
-    }
-  }
-
   const slideVariants = {
-    hidden: { opacity: 0, x: 50 },
-    visible: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: -50 },
+    enter: (direction) => ({
+      x: direction > 0 ? 1000 : -1000,
+      opacity: 0,
+      scale: 0.8,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      scale: 1,
+    },
+    exit: (direction) => ({
+      x: direction < 0 ? 1000 : -1000,
+      opacity: 0,
+      scale: 0.8,
+    }),
   }
 
   return (
@@ -78,7 +94,6 @@ export default function GallerySection() {
               onClick={() => {
                 setActiveSection(index)
                 setCurrentIndex(0)
-                setIsZoomed(false)
               }}
             >
               {section.name}
@@ -86,79 +101,56 @@ export default function GallerySection() {
           ))}
         </div>
 
-        <div className="relative w-full max-w-5xl mx-auto overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-          <AnimatePresence mode="wait">
+        <div className="relative mx-auto w-full max-w-xl aspect-[16/9] overflow-hidden rounded-lg shadow-lg"> {/* Updated line */}
+          <AnimatePresence initial={false} custom={direction}>
             <motion.div
               key={`${activeSection}-${currentIndex}`}
-              className="relative overflow-hidden rounded-lg"
-              initial="hidden"
-              animate="visible"
-              exit="exit"
+              custom={direction}
               variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{
+                x: { type: "spring", stiffness: 300, damping: 30 },
+                opacity: { duration: 0.5 },
+                scale: { duration: 0.5 },
+              }}
+              className="absolute w-full h-full"
             >
-              <div className="aspect-w-16 aspect-h-9">
-                <img
-                  src={sections[activeSection].images[currentIndex]}
-                  alt={`${sections[activeSection].name} image ${currentIndex + 1}`}
-                  className={`w-full h-full transition-all duration-300 ${
-                    activeSection === 2 ? 'filter blur-sm cursor-default object-cover' :
-                    activeSection === 1 ? (isZoomed ? 'cursor-zoom-out object-contain' : 'cursor-zoom-in object-cover hover:scale-105') :
-                    'object-cover hover:scale-105'
-                  }`}
-                  onClick={() => {
-                    if (activeSection === 1) {
-                      toggleZoom()
-                    } else if (activeSection === 2) {
-                      openPopup(sections[activeSection].images[currentIndex])
-                    }
-                  }}
-                />
-              </div>
-              {activeSection === 2 && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span 
-                    className="text-white text-lg font-semibold bg-black bg-opacity-50 px-4 py-2 rounded cursor-pointer"
-                    onClick={() => openPopup(sections[activeSection].images[currentIndex])}
-                  >
-                    Click to view details
-                  </span>
-                </div>
-              )}
-              <div className="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
-                Artist's impression
+              <img
+                src={sections[activeSection].images[currentIndex]}
+                alt={`${sections[activeSection].name} image ${currentIndex + 1}`}
+                className={`w-full h-full object-cover ${
+                  activeSection === 2 ? 'filter blur-sm cursor-pointer' : ''
+                }`}
+                onClick={() => {
+                  if (activeSection === 2) openPopup(sections[activeSection].images[currentIndex])
+                }}
+              />
+              <div className="absolute bottom-2 right-2 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
+                Artist impression
               </div>
             </motion.div>
           </AnimatePresence>
           <button
-            className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-75 rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 transition-all duration-300"
+            className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-75 rounded-full p-2 transition-all duration-300"
             onClick={handlePrevious}
           >
             <ChevronLeft className="w-6 h-6 text-gray-800" />
           </button>
           <button
-            className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-75 rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 transition-all duration-300"
+            className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-75 rounded-full p-2 transition-all duration-300"
             onClick={handleNext}
           >
             <ChevronRight className="w-6 h-6 text-gray-800" />
           </button>
-          {activeSection === 1 && (
-            <button
-              className="absolute bottom-4 left-4 bg-white bg-opacity-50 hover:bg-opacity-75 rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 transition-all duration-300"
-              onClick={toggleZoom}
-            >
-              {isZoomed ? (
-                <ZoomOut className="w-6 h-6 text-gray-800" />
-              ) : (
-                <ZoomIn className="w-6 h-6 text-gray-800" />
-              )}
-            </button>
-          )}
         </div>
+
         <div className="flex justify-center mt-4">
           {sections[activeSection].images.map((_, index) => (
             <button
               key={index}
-              className={`w-3 h-3 rounded-full mx-1 focus:outline-none ${
+              className={`w-3 h-3 rounded-full mx-1 ${
                 index === currentIndex ? 'bg-orange-500' : 'bg-gray-300'
               }`}
               onClick={() => setCurrentIndex(index)}
@@ -166,6 +158,7 @@ export default function GallerySection() {
           ))}
         </div>
       </div>
+
       {isPopupOpen && activeSection === 2 && (
         <ImagePopup
           isOpen={isPopupOpen}
@@ -185,13 +178,8 @@ function ImagePopup({ isOpen, onClose, image, sectionName }) {
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold text-gray-800">{sectionName}</h2>
-            <button
-              onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 transition-colors"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+            <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+              <X className="w-6 h-6" />
             </button>
           </div>
           <div className="flex flex-col md:flex-row gap-6">
@@ -213,7 +201,7 @@ function ImagePopup({ isOpen, onClose, image, sectionName }) {
                   <input type="tel" id="phone" name="phone" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
                 </div>
                 <button type="submit" className="w-full bg-orange-500 text-white py-2 px-4 rounded-md font-semibold hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
-                  Request More Information
+                  Register More Information
                 </button>
               </form>
             </div>

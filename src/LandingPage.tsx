@@ -367,40 +367,7 @@ const LandingPage = () => {
     },
   ]
 
-  const overviewSlides = [
-    { title: "33 Acre Land Parcel", description: "Expansive land area for comprehensive development" },
-    { title: "12.5 Acres Sports Stadia", description: "State-of-the-art sports facilities for residents" },
-    { title: "Luxury Apartments", description: "Opulent living spaces with modern amenities" },
-  ]
 
- 
-  const prevSlide = () => {
-    setDirection(-1)
-    setCurrentOverviewSlide((prev) => (prev === 0 ? overviewSlides.length - 1 : prev - 1))
-  }
-
-  const slideVariants = {
-    hidden: (direction: number) => ({
-      x: direction > 0 ? 300 : -300,
-      opacity: 0,
-    }),
-    visible: {
-      x: 0,
-      opacity: 1,
-      transition: {
-        x: { type: 'spring', stiffness: 300, damping: 30 },
-        opacity: { duration: 0.2 },
-      },
-    },
-    exit: (direction: number) => ({
-      x: direction > 0 ? -300 : 300,
-      opacity: 0,
-      transition: {
-        x: { type: 'spring', stiffness: 300, damping: 30 },
-        opacity: { duration: 0.2 },
-      },
-    }),
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white font-sans">
@@ -411,7 +378,7 @@ const LandingPage = () => {
         transition={{ duration: 0.3 }}
       >
         <div className="container mx-auto px-4 flex justify-between items-center">
-          <img src={logo2} alt="Evershine Amavi Logo" className="h-20" />
+          <img src={logo2} alt="Evershine Amavi Logo" className="h-16" />
           <nav className="hidden md:block">
             <ul className="flex space-x-11 items-center">
               
@@ -447,7 +414,7 @@ const LandingPage = () => {
                 
               </li>
               <li>
-                <img src={logo} alt="Evershine Amavi Logo" className="h-20" />
+                <img src={logo} alt="Evershine Amavi Logo" className="h-28" />
               </li>
             </ul>
           </nav>
