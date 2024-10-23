@@ -3,7 +3,7 @@
 import React, { ReactNode, useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, useAnimation, useScroll } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { Trees, School, Users, Dumbbell, Waves, Utensils, LandPlot, Gamepad, Heart, ChevronDown, ChevronLeft, ChevronRight, Menu, Baby } from 'lucide-react'
+import { Trees, School, Users, Dumbbell, Waves, Utensils, LandPlot, Gamepad, Heart, ChevronDown, ChevronLeft, ChevronRight, Menu, Baby ,X} from 'lucide-react'
 import photo from './builder.jpg'
 import logo from './Evershine Builder logo 1200x1200-01(2).png'
 import logo2 from './Evershine Amavi-01 logo.png'
@@ -185,6 +185,8 @@ const AnimatedCounter = ({ end, duration = 2 }) => {
 }
 
 const LandingPage = () => {
+  const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false)
+
   const [popupTitle, setPopupTitle] = useState('')
   const [isPopupOpen, setIsPopupOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
@@ -198,7 +200,15 @@ const LandingPage = () => {
   const servicesRef = useRef(null)
   const amenitiesRef = useRef(null)
   const connectivityRef = useRef(null)
-  const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false)
+  const [isFullScreenOpen, setIsFullScreenOpen] = useState(false)
+  const [fullScreenImage, setFullScreenImage] = useState('')
+
+  const openFullScreenImage = (image: string) => {
+    setFullScreenImage(image)
+    setIsFullScreenOpen(true)
+  }
+
+
 
   const Counter = ({ end, duration = 2 }) => {
     const [count, setCount] = useState(0)
@@ -279,7 +289,7 @@ const LandingPage = () => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
   }
-
+ 
   const amenities = [
     { name: "Yazo Park", icon: Trees },
     { name: "Cambridge International School", icon: School },
@@ -299,6 +309,25 @@ const LandingPage = () => {
     { typology: "2 BHK", area: "545 Sq. ft", price: "Click Here" },
     { typology: "2 BHK Premium", area: "612 Sq. ft", price: "Click Here" },
   ]
+  function FullScreenImage({ image, onClose }) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4">
+        <div className="relative max-w-4xl w-full bg-white rounded-lg overflow-hidden">
+          <button
+            onClick={onClose}
+            className="absolute top-2 right-2 text-gray-800 hover:text-gray-600 transition-colors bg-white rounded-full p-1"
+          >
+            <X className="w-8 h-8" />
+          </button>
+          <img
+            src={image}
+            alt="Full screen view"
+            className="w-full h-auto"
+          />
+        </div>
+      </div>
+    )
+  }
 
   const connectivityData = [
     {
@@ -506,6 +535,7 @@ const LandingPage = () => {
         </div>
       </section>
      
+      
       <section ref={servicesRef} className="py-12 md:py-20 relative overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
@@ -517,7 +547,7 @@ const LandingPage = () => {
         <div className="container mx-auto px-4 md:px-0 relative z-10">
           <h2 className="text-3xl font-bold text-center mb-6 md:mb-4 text-white">CONFIGURATIONS</h2>
           <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-          <div className="max-w-5xl mx-auto bg-white bg-opacity-90 backdrop-filter backdrop-blur-lg rounded-lg shadow-lg overflow-hidden">
+          <div className="max-w-5xl mx-auto bg-white bg-opacity-90 backdrop-filter backdrop-blur-lg rounded-lg shadow-lg overflow-hidden relative">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-orange-500 text-white">
@@ -547,6 +577,9 @@ const LandingPage = () => {
             </table>
           </div>
         </div>
+        <div className="absolute bottom-4 right-4 text-white text-sm font-semibold bg-orange-500 px-2 py-1 rounded-md">
+          *As per RERA Carpet Area
+        </div>
       </section>
 
       <GallerySection />
@@ -571,7 +604,6 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-        
       <section ref={connectivityRef} className="py-16 px-4 md:px-0 bg-gradient-to-b from-white to-orange-50">
         <div className="container mx-auto">
           <AnimatedSection>
@@ -599,15 +631,17 @@ const LandingPage = () => {
                   <img
                     src={connectivityMap}
                     alt="Evershine Amavi Location Map"
-                    className="w-full h-500px object-cover rounded-lg"
+                    className="w-full h-500px object-cover rounded-lg cursor-pointer"
+                    onClick={() => openFullScreenImage(connectivityMap)}
                   />
                 </div>
+                <p className="text-sm text-gray-500 italic mt-2 text-right">*Image as per Google Maps</p>
               </AnimatedSection>
             </div>
           </div>
         </div>
       </section>
-      
+
       <section ref={aboutUsRef} className="py-24 px-4 md:px-0 bg-white">
         <div className="container mx-auto">
           <h2 className="text-4xl font-bold text-center mb-6 text-gray-800">ABOUT US</h2>
@@ -766,8 +800,15 @@ const LandingPage = () => {
 
       <ContactPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} title={popupTitle} />
       <DisclaimerPopup isOpen={isDisclaimerOpen} onClose={() => setIsDisclaimerOpen(false)} />
+      {isFullScreenOpen && (
+        <FullScreenImage
+          image={fullScreenImage}
+          onClose={() => setIsFullScreenOpen(false)}
+        />
+      )}
     </div>
   )
 }
+
 
 export default LandingPage

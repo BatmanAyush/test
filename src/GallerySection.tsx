@@ -28,6 +28,7 @@ export default function GallerySection() {
   const [direction, setDirection] = useState(1)
   const [isPopupOpen, setIsPopupOpen] = useState(false)
   const [selectedImage, setSelectedImage] = useState('')
+  const [isFullScreenOpen, setIsFullScreenOpen] = useState(false)
 
   useEffect(() => {
     if (activeSection !== 0) {
@@ -60,6 +61,13 @@ export default function GallerySection() {
     if (activeSection === 2) {
       setSelectedImage(image)
       setIsPopupOpen(true)
+    }
+  }
+
+  const openFullScreen = (image) => {
+    if (activeSection === 0 || activeSection === 1) {
+      setSelectedImage(image)
+      setIsFullScreenOpen(true)
     }
   }
 
@@ -97,7 +105,8 @@ export default function GallerySection() {
               <img
                 src={image}
                 alt={`Exterior ${index + 1}`}
-                className="w-full h-64 object-cover rounded-lg"
+                className="w-full h-64 object-cover rounded-lg cursor-pointer"
+                onClick={() => openFullScreen(image)}
               />
               <div className="absolute bottom-2 right-2 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
                 Artist impression
@@ -143,10 +152,14 @@ export default function GallerySection() {
                     src={sections[activeSection].images[imageIndex]}
                     alt={`${sections[activeSection].name} ${imageIndex + 1}`}
                     className={`w-full h-64 object-cover rounded-lg ${
-                      activeSection === 2 ? 'filter blur-sm cursor-pointer' : ''
+                      activeSection === 2 ? 'filter blur-sm cursor-pointer' : 'cursor-pointer'
                     }`}
                     onClick={() => {
-                      if (activeSection === 2) openPopup(sections[activeSection].images[imageIndex])
+                      if (activeSection === 2) {
+                        openPopup(sections[activeSection].images[imageIndex])
+                      } else {
+                        openFullScreen(sections[activeSection].images[imageIndex])
+                      }
                     }}
                   />
                   {activeSection === 1 && (
@@ -234,6 +247,13 @@ export default function GallerySection() {
           sectionName="Floor Plans"
         />
       )}
+
+      {isFullScreenOpen && (activeSection === 0 || activeSection === 1) && (
+        <FullScreenImage
+          image={selectedImage}
+          onClose={() => setIsFullScreenOpen(false)}
+        />
+      )}
     </section>
   )
 }
@@ -269,6 +289,26 @@ function ImagePopup({ isOpen, onClose, image, sectionName }) {
             </button>
           </form>
         </div>
+      </div>
+    </div>
+  )
+}
+
+function FullScreenImage({ image, onClose }) {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4">
+      <div className="relative max-w-4xl w-full bg-white rounded-lg overflow-hidden">
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 text-gray-800 hover:text-gray-600 transition-colors bg-white rounded-full p-1"
+        >
+          <X className="w-8 h-8" />
+        </button>
+        <img
+          src={image}
+          alt="Full screen view"
+          className="w-full h-auto"
+        />
       </div>
     </div>
   )
