@@ -371,17 +371,15 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white font-sans">
-      <motion.header
-        className="fixed top-0 left-0 right-0 z-50 bg-white  text-gray-800 py-0 shadow-mdd"
+         <motion.header
+        className="fixed top-0 left-0 right-0 z-50 bg-white text-gray-800 py-0 shadow-md"
         initial={{ opacity: 1, y: 0 }}
-       
         transition={{ duration: 0.3 }}
       >
         <div className="container mx-auto px-4 flex justify-between items-center">
-          <img src={logo2} alt="Evershine Amavi Logo" className="h-16" />
+          <img src={logo2} alt="Evershine Amavi Logo" className="h-16 hidden md:block" />
           <nav className="hidden md:block">
             <ul className="flex space-x-11 items-center">
-              
               <li>
                 <button onClick={() => scrollToSection(overviewRef)} className="text-gray-800 hover:text-orange-500 transition-colors">
                   Overview
@@ -411,26 +409,31 @@ const LandingPage = () => {
                 <button onClick={() => scrollToSection(contactUsRef)} className="text-gray-800 hover:text-orange-500 transition-colors">
                   Contact Us
                 </button>
-                
               </li>
               <li>
                 <img src={logo} alt="Evershine Amavi Logo" className="h-28" />
               </li>
             </ul>
           </nav>
-          <button className="md:hidden  text-gray-800" onClick={toggleMenu}>
-            <Menu />
-          </button>
+          <div className="md:hidden flex items-center justify-between w-full">
+            <img src={logo2} alt="Evershine Amavi Logo" className="h-12" />
+            <img src={logo} alt="Evershine Amavi Logo" className="h-20" />
+            <button className="text-gray-800" onClick={toggleMenu}>
+              <Menu />
+            </button>
+          </div>
         </div>
         {isMenuOpen && (
           <div className="md:hidden bg-white bg-opacity-90 py-4">
             <ul className="flex flex-col items-center space-y-4">
               <li>
-                <img src={logo} alt="Evershine Amavi Logo" className="h-16 mb-4" />
+                <button onClick={() => { scrollToSection(overviewRef); toggleMenu(); }} className="text-gray-800 hover:text-orange-500 transition-colors">
+                  Overview
+                </button>
               </li>
               <li>
-                <button onClick={() => { scrollToSection(aboutUsRef); toggleMenu(); }} className="text-gray-800 hover:text-orange-500 transition-colors">
-                  Overview
+                <button onClick={() => { scrollToSection(servicesRef); toggleMenu(); }} className="text-gray-800 hover:text-orange-500 transition-colors">
+                  Configuration
                 </button>
               </li>
               <li>
@@ -457,6 +460,7 @@ const LandingPage = () => {
           </div>
         )}
       </motion.header>
+
 
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <motion.img
@@ -593,7 +597,6 @@ const LandingPage = () => {
       </section>
       
      
-     
       <section ref={aboutUsRef} className="py-20 px-4 md:px-0 bg-white">
         <div className="container mx-auto">
           <h2 className="text-4xl font-bold text-center mb-4 text-gray-800">ABOUT US</h2>
@@ -612,23 +615,23 @@ const LandingPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
               <AnimatedSection delay={0.2}>
                 <motion.div
-                  className="text-center p-4 bg-orange-100 rounded-lg shadow-lg h-full flex flex-col justify-between"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 300 }}
+                  className="text-center p-3 sm:p-4 bg-orange-100 rounded-lg shadow-lg h-full flex flex-col justify-between"
+                  whileHover={{ scale: 1.03 }}
+                  transition={{ type: "spring", stiffness: 300, duration: 0.5 }}
                 >
                   <motion.h3
-                    className="text-3xl font-bold text-orange-600 mb-2"
+                    className="text-2xl sm:text-3xl font-bold text-orange-600 mb-1 sm:mb-2"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
+                    transition={{ duration: 0.7, delay: 0.2 }}
                   >
                     1960
                   </motion.h3>
                   <motion.p
-                    className="text-gray-700 mb-4"
+                    className="text-sm sm:text-base text-gray-700"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.4 }}
+                    transition={{ duration: 0.7, delay: 0.4 }}
                   >
                     Our Journey
                   </motion.p>
@@ -636,16 +639,16 @@ const LandingPage = () => {
               </AnimatedSection>
               <AnimatedSection delay={0.4}>
                 <motion.div
-                  className="text-center p-4 bg-orange-100 rounded-lg shadow-lg h-full flex flex-col justify-between"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 300 }}
+                  className="text-center p-3 sm:p-4 bg-orange-100 rounded-lg shadow-lg h-full flex flex-col justify-between"
+                  whileHover={{ scale: 1.03 }}
+                  transition={{ type: "spring", stiffness: 300, duration: 0.5 }}
                 >
-                  <AnimatedCounter end={20000} duration={2.3} className="text-3xl" />
+                  <AnimatedCounter end={20000} duration={3} className="text-2xl sm:text-3xl font-bold text-orange-600" />
                   <motion.p
-                    className="text-gray-700 mt-2"
+                    className="text-sm sm:text-base text-gray-700 mt-1 sm:mt-2"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.4 }}
+                    transition={{ duration: 0.7, delay: 0.4 }}
                   >
                     Happy Families
                   </motion.p>
@@ -653,23 +656,23 @@ const LandingPage = () => {
               </AnimatedSection>
               <AnimatedSection delay={0.6}>
                 <motion.div
-                  className="text-center p-4 bg-orange-100 rounded-lg shadow-lg h-full flex flex-col justify-between"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 300 }}
+                  className="text-center p-3 sm:p-4 bg-orange-100 rounded-lg shadow-lg h-full flex flex-col justify-between"
+                  whileHover={{ scale: 1.03 }}
+                  transition={{ type: "spring", stiffness: 300, duration: 0.5 }}
                 >
                   <motion.h3
-                    className="text-3xl font-bold text-orange-600 mb-2"
+                    className="text-2xl sm:text-3xl font-bold text-orange-600 mb-1 sm:mb-2"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
+                    transition={{ duration: 0.7, delay: 0.2 }}
                   >
                     6 Decades
                   </motion.h3>
                   <motion.p
-                    className="text-gray-700 mb-4"
+                    className="text-sm sm:text-base text-gray-700"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.4 }}
+                    transition={{ duration: 0.7, delay: 0.4 }}
                   >
                     Since
                   </motion.p>
