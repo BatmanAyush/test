@@ -456,7 +456,7 @@ const LandingPage = () => {
           <div className="md:hidden flex items-center justify-between w-full">
             <img src={logo2} alt="Evershine Amavi Logo" className="h-10" />
             <div className="flex items-center">
-              <img src={logo} alt="Evershine Amavi Logo" className="h-16 mr-4" />
+              <img src={logo} alt="Evershine Amavi Logo" className="h-16 mr-32" />
               <button className="text-gray-800" onClick={toggleMenu}>
                 <Menu />
               </button>
@@ -510,12 +510,7 @@ const LandingPage = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
         />
-        {isMobile && (
-          <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-80 text-gray-800 p-4 z-10">
-            <h2 className="text-2xl font-bold mb-2">READY-TO-MOVE-IN, LARGE 1 & 2 BHKS</h2>
-            <p className="text-lg font-semibold">STARTING AT ₹ 41.50 LACS* ONWARDS</p>
-          </div>
-        )}
+       
       </section>
 
       <section ref={overviewRef} id="overview" className="py-16 md:py-24 bg-white">
