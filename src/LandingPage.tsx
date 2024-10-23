@@ -3,7 +3,7 @@
 import React, { ReactNode, useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, useAnimation, useScroll } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { Trees, School, Users, Dumbbell, Waves, Utensils, LandPlot, Gamepad, Heart, ChevronDown, ChevronLeft, ChevronRight, Menu,Baby } from 'lucide-react'
+import { Trees, School, Users, Dumbbell, Waves, Utensils, LandPlot, Gamepad, Heart, ChevronDown, ChevronLeft, ChevronRight, Menu, Baby } from 'lucide-react'
 import photo from './builder.jpg'
 import logo from './Evershine Builder logo 1200x1200-01(2).png'
 import logo2 from './Evershine Amavi-01 logo.png'
@@ -60,56 +60,55 @@ interface Item {
 interface ConnectivityItemProps {
   title: string
   items: Item[]
+  isLastItem: boolean
 }
-const ConnectivityItem: React.FC<ConnectivityItemProps> = ({ title, items }) => {
-  const [isOpen, setIsOpen] = useState(false)
 
+const ConnectivityItem: React.FC<ConnectivityItemProps> = ({ title, items, isLastItem }) => {
+  const [isOpen, setIsOpen] = useState(isLastItem)
 
-    return (
-      <div className="border-b border-orange-200 last:border-b-0">
-        <button
-          className="flex justify-between items-center w-full text-left font-semibold text-lg text-gray-800 hover:text-orange-500 transition-all duration-300 ease-in-out py-2"
-          onClick={() => setIsOpen(!isOpen)}
+  return (
+    <div className="border-b border-orange-200 last:border-b-0">
+      <button
+        className="flex justify-between items-center w-full text-left font-semibold text-lg text-gray-800 hover:text-orange-500 transition-all duration-300 ease-in-out py-2"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {title}
+        <motion.div
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ duration: 0.3 }}
         >
-          {title}
-          <motion.div
-            animate={{ rotate: isOpen ? 180 : 0 }}
+          <ChevronDown className="w-5 h-5" />
+        </motion.div>
+      </button>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.ul
+            className="mt-2 ml-4"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <ChevronDown className="w-5 h-5" />
-          </motion.div>
-        </button>
-        <AnimatePresence initial={false}>
-          {isOpen && (
-            <motion.ul
-              className="mt-2 ml-4"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              {items.map((item, index) => (
-                <motion.li
-                  key={index}
-                  className="mb-2 last:mb-0 p-2 rounded-md hover:bg-orange-50 transition-all duration-300 ease-in-out"
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                >
-                  <span className="font-medium text-gray-800">{item.name}</span>
-                  <span className="text-sm text-gray-600 ml-2">
-                    {item.distance} | {item.time}
-                  </span>
-                </motion.li>
-              ))}
-            </motion.ul>
-          )}
-        </AnimatePresence>
-      </div>
-    )
-
+            {items.map((item, index) => (
+              <motion.li
+                key={index}
+                className="mb-2 last:mb-0 p-2 rounded-md hover:bg-orange-50 transition-all duration-300 ease-in-out"
+                initial={{ x: -20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+              >
+                <span className="font-medium text-gray-800">{item.name}</span>
+                <span className="text-sm text-gray-600 ml-2">
+                  {item.distance} | {item.time}
+                </span>
+              </motion.li>
+            ))}
+          </motion.ul>
+        )}
+      </AnimatePresence>
+    </div>
+  )
 }
-
 
 const AnimatedCounter = ({ end, duration = 2 }) => {
   const [count, setCount] = useState(0)
@@ -144,7 +143,7 @@ const AnimatedCounter = ({ end, duration = 2 }) => {
   return (
     <div ref={ref} className="relative">
       <motion.div
-        className="text-6xl font-bold text-orange-600"
+        className="text-3xl font-bold text-orange-600"
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
@@ -187,7 +186,7 @@ const AnimatedCounter = ({ end, duration = 2 }) => {
 
 const LandingPage = () => {
   const [popupTitle, setPopupTitle] = useState('')
-  const [isPopupOpen, setIsPopupOpen] = useState(true)
+  const [isPopupOpen, setIsPopupOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const contactUsRef = useRef<HTMLElement>(null)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -250,13 +249,13 @@ const LandingPage = () => {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-
   useEffect(() => {
-    const timer = setInterval(() => {
-      nextSlide()
+    const timer = setTimeout(() => {
+      setIsPopupOpen(true)
+      setPopupTitle('Welcome to Evershine Amavi')
     }, 5000)
 
-    return () => clearInterval(timer)
+    return () => clearTimeout(timer)
   }, [])
 
   const scrollToSection = (ref: React.RefObject<HTMLElement>) => {
@@ -271,7 +270,6 @@ const LandingPage = () => {
       })
     }
   }
-
 
   const openPopup = (title: string) => {
     setPopupTitle(title)
@@ -291,17 +289,14 @@ const LandingPage = () => {
     { name: "Banquet Hall", icon: Utensils },
     { name: "Siddhivinayak Temple", icon: LandPlot },
     { name: "Yoga Center", icon: Heart },
-
-  
     { name: "Children's Play Area", icon: Baby },
-   
     { name: "Board Games and Lot more!", icon: Gamepad }
   ]
+
   const configurationData = [
     { typology: "1 BHK", area: "395 Sq. ft", price: "Click Here" },
     { typology: "1 BHK Premium", area: "435 Sq. ft", price: "Click Here" },
-    { typology: "2 BHK", area: "545 Sq. ft", price: "Click Here" }
-  ,
+    { typology: "2 BHK", area: "545 Sq. ft", price: "Click Here" },
     { typology: "2 BHK Premium", area: "612 Sq. ft", price: "Click Here" },
   ]
 
@@ -367,7 +362,8 @@ const LandingPage = () => {
         { name: "Global Hospital", distance: "1.2km", time: "3mins" },
         { name: "Param Maternity & Nursing Hospital", distance: "1.9km", time: "6mins" },
         { name: "Mahavir Hospital", distance: "2km", time: "6mins" },
-        { name: "Sanjivani Hospital", distance: "2.2km", time: "7mins" },
+        { name: "Sanjivani Hospital", distance: "2.2km", time: "7mins" 
+        },
       ]
     },
     {
@@ -379,11 +375,9 @@ const LandingPage = () => {
     },
   ]
 
-
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white font-sans">
-             <motion.header
+      <motion.header
         ref={headerRef}
         className="fixed top-0 left-0 right-0 z-50 bg-white text-gray-800 py-0 shadow-md"
         initial={{ opacity: 1, y: 0 }}
@@ -476,9 +470,6 @@ const LandingPage = () => {
         )}
       </motion.header>
 
-
-
-
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <motion.img
           src={isMobile ? mobileBanner : desktopBanner}
@@ -496,27 +487,24 @@ const LandingPage = () => {
         )}
       </section>
 
-      <section ref ={overviewRef} id="overview" className="py-16 md:py-24 bg-white">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <AnimatedSection>
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-gray-800">OVERVIEW</h2>
-          <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-        </AnimatedSection>
-        <AnimatedSection delay={0.2}>
-          <div className="max-w-4xl mx-auto text-center">
-            <p className="text-base md:text-lg text-gray-600 leading-relaxed">
-              Nestled within the expansive landscape of Global City, Amavi 303 is a private haven that
-              combines serenity with luxury. Inspired by the Latin phrase "Veni, Vidi, Amavi" —
-              meaning "I came, I saw, I loved" - Amavi 303 offers an escape from the chaos of city life,
-              while still being surrounded by modern comforts and conveniences.
-            </p>
-          </div>
-        </AnimatedSection>
-       
-      </div>
-    </section>
-     
-     
+      <section ref={overviewRef} id="overview" className="py-16 md:py-24 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection>
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-gray-800">OVERVIEW</h2>
+            <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
+          </AnimatedSection>
+          <AnimatedSection delay={0.2}>
+            <div className="max-w-4xl mx-auto text-center">
+              <p className="text-base md:text-lg text-gray-600 leading-relaxed">
+                Nestled within the expansive landscape of Global City, Amavi 303 is a private haven that
+                combines serenity with luxury. Inspired by the Latin phrase "Veni, Vidi, Amavi" —
+                meaning "I came, I saw, I loved" - Amavi 303 offers an escape from the chaos of city life,
+                while still being surrounded by modern comforts and conveniences.
+              </p>
+            </div>
+          </AnimatedSection>
+        </div>
+      </section>
      
       <section ref={servicesRef} className="py-12 md:py-20 relative overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -533,23 +521,25 @@ const LandingPage = () => {
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-orange-500 text-white">
-                  <th className="py-4 px-6 text-left border-r border-white">Typology</th>
-                  <th className="py-4 px-6 text-left border-r border-white">RERA Carpet Area (Sq.Ft.)</th>
-                  <th className="py-4 px-6 text-left">Price</th>
+                  <th className="py-4 px-6 text-center border-r border-white">Typology</th>
+                  <th className="py-4 px-6 text-center border-r border-white">RERA Carpet Area (Sq.Ft.)</th>
+                  <th className="py-4 px-6 text-center">Price</th>
                 </tr>
               </thead>
               <tbody>
                 {configurationData.map((config, index) => (
                   <tr key={index} className="border-b border-orange-200 last:border-b-0">
-                    <td className="py-4 px-6 border-r border-orange-200">{config.typology}</td>
-                    <td className="py-4 px-6 border-r border-orange-200">{config.area}</td>
-                    <td className="py-4 px-6">
-                      <button
+                    <td className="py-4 px-6 border-r border-orange-200 text-center">{config.typology}</td>
+                    <td className="py-4 px-6 border-r border-orange-200 text-center">{config.area}</td>
+                    <td className="py-4 px-6 text-center">
+                      <motion.button
                         onClick={() => openPopup('Check Price')}
                         className="text-orange-500 hover:text-orange-600 font-semibold transition-colors duration-300"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                       >
                         {config.price}
-                      </button>
+                      </motion.button>
                     </td>
                   </tr>
                 ))}
@@ -558,7 +548,6 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-
 
       <GallerySection />
 
@@ -582,6 +571,7 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
+        
       <section ref={connectivityRef} className="py-16 px-4 md:px-0 bg-gradient-to-b from-white to-orange-50">
         <div className="container mx-auto">
           <AnimatedSection>
@@ -593,7 +583,12 @@ const LandingPage = () => {
               <AnimatedSection delay={0.2}>
                 <div className="space-y-4 max-h-[600px] overflow-y-auto">
                   {connectivityData.map((item, index) => (
-                    <ConnectivityItem key={index} title={item.title} items={item.items} />
+                    <ConnectivityItem 
+                      key={index} 
+                      title={item.title} 
+                      items={item.items} 
+                      isLastItem={index === connectivityData.length - 1}
+                    />
                   ))}
                 </div>
               </AnimatedSection>
@@ -613,93 +608,56 @@ const LandingPage = () => {
         </div>
       </section>
       
-     
-      <section ref={aboutUsRef} className="py-20 px-4 md:px-0 bg-white">
+      <section ref={aboutUsRef} className="py-24 px-4 md:px-0 bg-white">
         <div className="container mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-4 text-gray-800">ABOUT US</h2>
-          <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-          <div className="max-w-6xl mx-auto text-center px-4 md:px-8">
-            <p className="text-lg mb-6 text-gray-600 leading-relaxed">
+          <h2 className="text-4xl font-bold text-center mb-6 text-gray-800">ABOUT US</h2>
+          <div className="w-24 h-1 bg-orange-500 mx-auto mb-12"></div>
+          <div className="max-w-6xl mx-auto text-center px-4 md:px-8 mb-16">
+            <p className="text-lg text-gray-600 leading-relaxed mb-8">
               Founded in 1960, Evershine Group has established a legacy of values through the creation of
               infrastructure. For over six decades, we have aimed to exceed our promises by delivering more than
               what we commit. We have focused on offering middle-income families an aspirational lifestyle, with
-              homes designed to blend nature with modern living. Our developments are rich in greenery and feature
-              an array of lifestyle and recreational amenities, making us one of Mumbai's most trusted and leading real
-              estate developers.
+              homes designed to blend nature with modern living.
+              Our developments are rich in greenery and feature an array of lifestyle and recreational amenities,
+              making us one of Mumbai's most trusted and leading real estate developers. We take pride in our
+              commitment to quality, innovation, and customer satisfaction, which has been the cornerstone of our
+              success over the years.
             </p>
           </div> 
-          <div className="mt-16">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
-              <AnimatedSection delay={0.2}>
-                <motion.div
-                  className="text-center p-3 sm:p-4 bg-orange-100 rounded-lg shadow-lg h-full flex flex-col justify-between"
-                  whileHover={{ scale: 1.03 }}
-                  transition={{ type: "spring", stiffness: 300, duration: 0.5 }}
-                >
-                  <motion.h3
-                    className="text-2xl sm:text-3xl font-bold text-orange-600 mb-1 sm:mb-2"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, delay: 0.2 }}
-                  >
-                    1960
-                  </motion.h3>
-                  <motion.p
-                    className="text-sm sm:text-base text-gray-700 mb-5 "
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.7, delay: 0.4 }}
-                  >
-                    Our Journey
-                  </motion.p>
-                </motion.div>
-              </AnimatedSection>
-              <AnimatedSection delay={0.4}>
-                <motion.div
-                  className="text-center p-3 sm:p-4 bg-orange-100 rounded-lg shadow-lg h-full flex flex-col justify-between"
-                  whileHover={{ scale: 1.03 }}
-                  transition={{ type: "spring", stiffness: 300, duration: 0.5 }}
-                >
-                  <AnimatedCounter end={20000} duration={3} className="text-2xl sm:text-3xl font-bold text-orange-600" />
-                  <motion.p
-                    className="text-sm sm:text-base text-gray-700 mt-1 sm:mt-2"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.7, delay: 0.4 }}
-                  >
-                    Happy Families
-                  </motion.p>
-                </motion.div>
-              </AnimatedSection>
-              <AnimatedSection delay={0.6}>
-                <motion.div
-                  className="text-center p-3 sm:p-4 bg-orange-100 rounded-lg shadow-lg h-full flex flex-col justify-between"
-                  whileHover={{ scale: 1.03 }}
-                  transition={{ type: "spring", stiffness: 300, duration: 0.5 }}
-                >
-                  <motion.h3
-                    className="text-2xl sm:text-3xl font-bold text-orange-600 mb-1 sm:mb-2"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, delay: 0.2 }}
-                  >
-                    6 Decades
-                  </motion.h3>
-                  <motion.p
-                    className="text-sm sm:text-base text-gray-700 mb-5"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.7, delay: 0.4 }}
-                  >
-                    Since
-                  </motion.p>
-                </motion.div>
-              </AnimatedSection>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <AnimatedSection delay={0.2}>
+              <motion.div
+                className="bg-orange-50 rounded-lg shadow-sm p-8 flex flex-col items-center justify-center h-full"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300, duration: 0.3 }}
+              >
+                <p className="text-3xl font-bold text-orange-600 mb-4">1960</p>
+                <p className="text-base text-gray-600 text-center">Our Journey Began</p>
+              </motion.div>
+            </AnimatedSection>
+            <AnimatedSection delay={0.3}>
+              <motion.div
+                className="bg-orange-50 rounded-lg shadow-sm p-8 flex flex-col items-center justify-center h-full"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300, duration: 0.3 }}
+              >
+                <AnimatedCounter end={20000} duration={2} />
+                <p className="text-base text-gray-600 text-center mt-4">Happy Families</p>
+              </motion.div>
+            </AnimatedSection>
+            <AnimatedSection delay={0.4}>
+              <motion.div
+                className="bg-orange-50 rounded-lg shadow-sm p-8 flex flex-col items-center justify-center h-full"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300, duration: 0.3 }}
+              >
+                <p className="text-3xl font-bold text-orange-600 mb-4">6 Decades</p>
+                <p className="text-base text-gray-600 text-center">Of Excellence</p>
+              </motion.div>
+            </AnimatedSection>
           </div>
         </div>
       </section>
-
 
       <section ref={contactUsRef} className="py-20 px-4 md:px-0 bg-gradient-to-b from-orange-100 to-orange-200 text-gray-800">
         <div className="container mx-auto">
@@ -712,15 +670,15 @@ const LandingPage = () => {
               <div className="bg-white p-8 rounded-lg shadow-lg border border-orange-300">
                 <form className="space-y-4">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+                    <label htmlFor="name" className="block text-lg font-medium text-gray-700">Name</label>
                     <input type="text" id="name" name="name" className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
                   </div>
                   <div>
-                    <label htmlFor="mobile" className="block text-sm font-medium text-gray-700">Mobile</label>
+                    <label htmlFor="mobile" className="block text-lg font-medium text-gray-700">Mobile</label>
                     <input type="tel" id="mobile" name="mobile" className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                    <label htmlFor="email" className="block text-lg font-medium text-gray-700">Email</label>
                     <input type="email" id="email" name="email" className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
                   </div>
                   <div>
@@ -760,15 +718,15 @@ const LandingPage = () => {
           <div className="flex flex-col md:flex-row items-start justify-between space-y-4 md:space-y-0">
             <div className="flex space-x-4 md:w-1/4 justify-end">
               <div className="flex flex-col items-center">
-                <img src={qrCode1} alt="Evershine Amavi Phase 1 QR Code" className="w-20 h-20" />
+                <img src={qrCode1} alt="Evershine Amavi Phase 1 QR Code" className="w-30 h-30" />
                 <p className="mt-1 text-xs">Phase 1</p>
               </div>
               <div className="flex flex-col items-center">
-                <img src={qrCode2} alt="Evershine Amavi Phase 2 QR Code" className="w-20 h-20" />
+                <img src={qrCode2} alt="Evershine Amavi Phase 2 QR Code" className="w-30 h-30" />
                 <p className="mt-1 text-xs">Phase 2</p>
               </div>
               <div className="flex flex-col items-center">
-                <img src={qrCode3} alt="Evershine Amavi Phase 3 QR Code" className="w-20 h-20" />
+                <img src={qrCode3} alt="Evershine Amavi Phase 3 QR Code" className="w-30 h-30" />
                 <p className="mt-1 text-xs">Phase 3</p>
               </div>
             </div>
@@ -789,7 +747,6 @@ const LandingPage = () => {
           </div>
         </div>
       </footer>
-      {/* Contact buttons */}
       <motion.button
         className="fixed bottom-4 left-4 bg-orange-500 text-white px-4 py-2 rounded-md shadow-lg hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 z-50 font-semibold"
         onClick={() => openPopup('Download Brochure')}
@@ -807,7 +764,6 @@ const LandingPage = () => {
         Enquire Now
       </motion.button>
 
-      {/* Contact Popup */}
       <ContactPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} title={popupTitle} />
       <DisclaimerPopup isOpen={isDisclaimerOpen} onClose={() => setIsDisclaimerOpen(false)} />
     </div>

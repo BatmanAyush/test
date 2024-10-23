@@ -70,6 +70,7 @@ const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose, title }) =
                   name="phone"
                   className="block w-full rounded-lg border-orange-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50 text-lg py-3 px-4"
                   required
+                  maxLength={10}
                 />
               </div>
               <div>

@@ -25,30 +25,35 @@ const sections = [
 export default function GallerySection() {
   const [activeSection, setActiveSection] = useState(0)
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [direction, setDirection] = useState(0)
+  const [direction, setDirection] = useState(1)
   const [isPopupOpen, setIsPopupOpen] = useState(false)
   const [selectedImage, setSelectedImage] = useState('')
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      handleNext()
-    }, 5000) // Change image every 5 seconds
-
-    return () => clearInterval(timer)
+    if (activeSection !== 0) {
+      const timer = setInterval(() => {
+        handleNext()
+      }, 5000) // Change image every 5 seconds for Amenities and Floor Plan
+      return () => clearInterval(timer)
+    }
   }, [activeSection, currentIndex])
 
   const handleNext = () => {
-    setDirection(1)
-    setCurrentIndex((prevIndex) =>
-      prevIndex + 1 === sections[activeSection].images.length ? 0 : prevIndex + 1
-    )
+    if (activeSection !== 0) {
+      setDirection(1)
+      setCurrentIndex((prevIndex) =>
+        prevIndex + 2 >= sections[activeSection].images.length ? 0 : prevIndex + 2
+      )
+    }
   }
 
   const handlePrevious = () => {
-    setDirection(-1)
-    setCurrentIndex((prevIndex) =>
-      prevIndex - 1 < 0 ? sections[activeSection].images.length - 1 : prevIndex - 1
-    )
+    if (activeSection !== 0) {
+      setDirection(-1)
+      setCurrentIndex((prevIndex) =>
+        prevIndex - 2 < 0 ? sections[activeSection].images.length - 2 : prevIndex - 2
+      )
+    }
   }
 
   const openPopup = (image) => {
@@ -58,22 +63,104 @@ export default function GallerySection() {
     }
   }
 
-  const slideVariants = {
-    enter: (direction) => ({
-      x: direction > 0 ? 1000 : -1000,
-      opacity: 0,
-      scale: 0.8,
-    }),
+  const variants = {
+    enter: (direction: number) => {
+      return {
+        x: direction > 0 ? '100%' : '-100%',
+        opacity: 0
+      }
+    },
     center: {
       x: 0,
-      opacity: 1,
-      scale: 1,
+      opacity: 1
     },
-    exit: (direction) => ({
-      x: direction < 0 ? 1000 : -1000,
-      opacity: 0,
-      scale: 0.8,
-    }),
+    exit: (direction: number) => {
+      return {
+        x: direction < 0 ? '100%' : '-100%',
+        opacity: 0
+      }
+    }
+  }
+
+  const swipeConfidenceThreshold = 10000
+  const swipePower = (offset: number, velocity: number) => {
+    return Math.abs(offset) * velocity
+  }
+
+  const renderImages = () => {
+    if (activeSection === 0) {
+      // Exterior section: display 2 images side by side
+      return (
+        <div className="flex justify-between">
+          {sections[activeSection].images.map((image, index) => (
+            <div key={index} className="w-[49%] relative">
+              <img
+                src={image}
+                alt={`Exterior ${index + 1}`}
+                className="w-full h-64 object-cover rounded-lg"
+              />
+              <div className="absolute bottom-2 right-2 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
+                Artist impression
+              </div>
+            </div>
+          ))}
+        </div>
+      )
+    } else {
+      // Amenities and Floor Plan sections: display 2 images with slider
+      return (
+        <AnimatePresence initial={false} custom={direction} mode="wait">
+          <motion.div
+            key={currentIndex}
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{
+              x: { type: "spring", stiffness: 300, damping: 30 },
+              opacity: { duration: 0.2 }
+            }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={1}
+            onDragEnd={(e, { offset, velocity }) => {
+              const swipe = swipePower(offset.x, velocity.x)
+
+              if (swipe < -swipeConfidenceThreshold) {
+                handleNext()
+              } else if (swipe > swipeConfidenceThreshold) {
+                handlePrevious()
+              }
+            }}
+            className="flex justify-between relative w-full"
+          >
+            {[0, 1].map((offset) => {
+              const imageIndex = (currentIndex + offset) % sections[activeSection].images.length
+              return (
+                <div key={imageIndex} className="w-[49%] relative">
+                  <img
+                    src={sections[activeSection].images[imageIndex]}
+                    alt={`${sections[activeSection].name} ${imageIndex + 1}`}
+                    className={`w-full h-64 object-cover rounded-lg ${
+                      activeSection === 2 ? 'filter blur-sm cursor-pointer' : ''
+                    }`}
+                    onClick={() => {
+                      if (activeSection === 2) openPopup(sections[activeSection].images[imageIndex])
+                    }}
+                  />
+                  {activeSection === 1 && (
+                    <div className="absolute bottom-2 right-2 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
+                      Artist impression
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </motion.div>
+        </AnimatePresence>
+      )
+    }
   }
 
   return (
@@ -101,72 +188,49 @@ export default function GallerySection() {
           ))}
         </div>
 
-        <div className="relative mx-auto w-full max-w-lg aspect-[16/9] overflow-hidden rounded-lg shadow-lg">
-          <AnimatePresence initial={false} custom={direction}>
-            <motion.div
-              key={`${activeSection}-${currentIndex}`}
-              custom={direction}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{
-                x: { type: "spring", stiffness: 300, damping: 30 },
-                opacity: { duration: 0.5 },
-                scale: { duration: 0.5 },
-              }}
-              className="absolute w-full h-full"
-            >
-              <motion.img
-                src={sections[activeSection].images[currentIndex]}
-                alt={`${sections[activeSection].name} image ${currentIndex + 1}`}
-                className={`w-full h-full object-cover ${
-                  activeSection === 2 ? 'filter blur-sm cursor-pointer' : ''
-                }`}
-                onClick={() => {
-                  if (activeSection === 2) openPopup(sections[activeSection].images[currentIndex])
-                }}
-                whileHover={activeSection === 2 ? { scale: 1.05 } : {}}
-                transition={{ duration: 0.3 }}
-              />
-              {activeSection !== 2 && (
-                <div className="absolute bottom-2 right-2 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
-                  Artist impression
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
-          <button
-            className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-75 rounded-full p-2 transition-all duration-300"
-            onClick={handlePrevious}
-          >
-            <ChevronLeft className="w-6 h-6 text-gray-800" />
-          </button>
-          <button
-            className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-75 rounded-full p-2 transition-all duration-300"
-            onClick={handleNext}
-          >
-            <ChevronRight className="w-6 h-6 text-gray-800" />
-          </button>
+        <div className="mx-auto w-full max-w-4xl relative overflow-hidden">
+          {renderImages()}
+          {activeSection !== 0 && (
+            <>
+              <button
+                className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-75 rounded-full p-2 transition-all duration-300 z-10"
+                onClick={handlePrevious}
+              >
+                <ChevronLeft className="w-6 h-6 text-gray-800" />
+              </button>
+              <button
+                className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-75 rounded-full p-2 transition-all duration-300 z-10"
+                onClick={handleNext}
+              >
+                <ChevronRight className="w-6 h-6 text-gray-800" />
+              </button>
+            </>
+          )}
         </div>
 
-        <div className="flex justify-center mt-4">
-          {sections[activeSection].images.map((_, index) => (
-            <button
-              key={index}
-              className={`w-3 h-3 rounded-full mx-1 ${
-                index === currentIndex ? 'bg-orange-500' : 'bg-gray-300'
-              }`}
-              onClick={() => setCurrentIndex(index)}
-            />
-          ))}
-        </div>
+        {activeSection !== 0 && (
+          <div className="flex justify-center mt-4">
+            {Array.from({ length: Math.ceil(sections[activeSection].images.length / 2) }).map((_, index) => (
+              <button
+                key={index}
+                className={`w-3 h-3 rounded-full mx-1 ${
+                  Math.floor(currentIndex / 2) === index ? 'bg-orange-500' : 'bg-gray-300'
+                }`}
+                onClick={() => {
+                  setDirection(index * 2 > currentIndex ? 1 : -1)
+                  setCurrentIndex(index * 2)
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {isPopupOpen && activeSection === 2 && (
         <ImagePopup
           isOpen={isPopupOpen}
           onClose={() => setIsPopupOpen(false)}
+          image={selectedImage}
           sectionName="Floor Plans"
         />
       )}
@@ -174,7 +238,7 @@ export default function GallerySection() {
   )
 }
 
-function ImagePopup({ isOpen, onClose, sectionName }) {
+function ImagePopup({ isOpen, onClose, image, sectionName }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full overflow-hidden">
