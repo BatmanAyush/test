@@ -101,7 +101,7 @@ export default function GallerySection() {
           ))}
         </div>
 
-        <div className="relative mx-auto w-full max-w-lg aspect-[16/9] overflow-hidden rounded-lg shadow-lg"> {/* Updated line */}
+        <div className="relative mx-auto w-full max-w-lg aspect-[16/9] overflow-hidden rounded-lg shadow-lg">
           <AnimatePresence initial={false} custom={direction}>
             <motion.div
               key={`${activeSection}-${currentIndex}`}
@@ -117,7 +117,7 @@ export default function GallerySection() {
               }}
               className="absolute w-full h-full"
             >
-              <img
+              <motion.img
                 src={sections[activeSection].images[currentIndex]}
                 alt={`${sections[activeSection].name} image ${currentIndex + 1}`}
                 className={`w-full h-full object-cover ${
@@ -126,10 +126,14 @@ export default function GallerySection() {
                 onClick={() => {
                   if (activeSection === 2) openPopup(sections[activeSection].images[currentIndex])
                 }}
+                whileHover={activeSection === 2 ? { scale: 1.05 } : {}}
+                transition={{ duration: 0.3 }}
               />
-              <div className="absolute bottom-2 right-2 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
-                Artist impression
-              </div>
+              {activeSection !== 2 && (
+                <div className="absolute bottom-2 right-2 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
+                  Artist impression
+                </div>
+              )}
             </motion.div>
           </AnimatePresence>
           <button
@@ -163,7 +167,6 @@ export default function GallerySection() {
         <ImagePopup
           isOpen={isPopupOpen}
           onClose={() => setIsPopupOpen(false)}
-          image={selectedImage}
           sectionName="Floor Plans"
         />
       )}
@@ -171,39 +174,36 @@ export default function GallerySection() {
   )
 }
 
-function ImagePopup({ isOpen, onClose, image, sectionName }) {
+function ImagePopup({ isOpen, onClose, sectionName }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full">
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-gray-800">{sectionName}</h2>
-            <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+      <div className="bg-white rounded-lg shadow-xl max-w-md w-full overflow-hidden">
+        <div className="bg-orange-500 text-white py-4 px-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold">{sectionName}</h2>
+            <button onClick={onClose} className="text-white hover:text-gray-200 transition-colors">
               <X className="w-6 h-6" />
             </button>
           </div>
-          <div className="flex flex-col md:flex-row gap-6">
-           
-            <div className="md:w-1/2">
-              <form className="space-y-4">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-                  <input type="text" id="name" name="name" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                  <input type="email" id="email" name="email" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
-                </div>
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone</label>
-                  <input type="tel" id="phone" name="phone" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
-                </div>
-                <button type="submit" className="w-full bg-orange-500 text-white py-2 px-4 rounded-md font-semibold hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
-                  Register More Information
-                </button>
-              </form>
+        </div>
+        <div className="p-6">
+          <form className="space-y-4">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+              <input type="text" id="name" name="name" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
             </div>
-          </div>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+              <input type="email" id="email" name="email" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
+            </div>
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone</label>
+              <input type="tel" id="phone" name="phone" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
+            </div>
+            <button type="submit" className="w-full bg-orange-500 text-white py-3 px-4 rounded-md font-semibold hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
+              Register for More Information
+            </button>
+          </form>
         </div>
       </div>
     </div>

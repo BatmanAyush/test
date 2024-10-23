@@ -193,6 +193,7 @@ const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isHeaderVisible, setIsHeaderVisible] = useState(true)
   const { scrollY } = useScroll()
+  const headerRef = useRef<HTMLElement>(null)
   const aboutUsRef = useRef(null)
   const overviewRef = useRef<HTMLElement>(null)
   const servicesRef = useRef(null)
@@ -249,6 +250,7 @@ const LandingPage = () => {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
+
   useEffect(() => {
     const timer = setInterval(() => {
       nextSlide()
@@ -258,8 +260,18 @@ const LandingPage = () => {
   }, [])
 
   const scrollToSection = (ref: React.RefObject<HTMLElement>) => {
-    ref.current?.scrollIntoView({ behavior: 'smooth' })
+    if (ref.current) {
+      const headerHeight = headerRef.current?.offsetHeight || 0
+      const elementPosition = ref.current.getBoundingClientRect().top + window.pageYOffset
+      const offsetPosition = elementPosition - headerHeight
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      })
+    }
   }
+
 
   const openPopup = (title: string) => {
     setPopupTitle(title)
@@ -286,7 +298,7 @@ const LandingPage = () => {
     { name: "Board Games and Lot more!", icon: Gamepad }
   ]
   const configurationData = [
-    { typology: "1 BHK", area: "395 Sq. fit", price: "Click Here" },
+    { typology: "1 BHK", area: "395 Sq. ft", price: "Click Here" },
     { typology: "1 BHK Premium", area: "435 Sq. ft", price: "Click Here" },
     { typology: "2 BHK", area: "545 Sq. ft", price: "Click Here" }
   ,
@@ -371,7 +383,8 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white font-sans">
-         <motion.header
+             <motion.header
+        ref={headerRef}
         className="fixed top-0 left-0 right-0 z-50 bg-white text-gray-800 py-0 shadow-md"
         initial={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
@@ -416,11 +429,13 @@ const LandingPage = () => {
             </ul>
           </nav>
           <div className="md:hidden flex items-center justify-between w-full">
-            <img src={logo2} alt="Evershine Amavi Logo" className="h-12" />
-            <img src={logo} alt="Evershine Amavi Logo" className="h-20" />
-            <button className="text-gray-800" onClick={toggleMenu}>
-              <Menu />
-            </button>
+            <img src={logo2} alt="Evershine Amavi Logo" className="h-10" />
+            <div className="flex items-center">
+              <img src={logo} alt="Evershine Amavi Logo" className="h-16 mr-4" />
+              <button className="text-gray-800" onClick={toggleMenu}>
+                <Menu />
+              </button>
+            </div>
           </div>
         </div>
         {isMenuOpen && (
@@ -462,6 +477,8 @@ const LandingPage = () => {
       </motion.header>
 
 
+
+
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <motion.img
           src={isMobile ? mobileBanner : desktopBanner}
@@ -479,7 +496,7 @@ const LandingPage = () => {
         )}
       </section>
 
-      <section id="overview" className="py-16 md:py-24 bg-white">
+      <section ref ={overviewRef} id="overview" className="py-16 md:py-24 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <AnimatedSection>
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-gray-800">OVERVIEW</h2>
@@ -610,7 +627,7 @@ const LandingPage = () => {
               an array of lifestyle and recreational amenities, making us one of Mumbai's most trusted and leading real
               estate developers.
             </p>
-          </div>
+          </div> 
           <div className="mt-16">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
               <AnimatedSection delay={0.2}>
@@ -628,7 +645,7 @@ const LandingPage = () => {
                     1960
                   </motion.h3>
                   <motion.p
-                    className="text-sm sm:text-base text-gray-700"
+                    className="text-sm sm:text-base text-gray-700 mb-5 "
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.7, delay: 0.4 }}
@@ -669,7 +686,7 @@ const LandingPage = () => {
                     6 Decades
                   </motion.h3>
                   <motion.p
-                    className="text-sm sm:text-base text-gray-700"
+                    className="text-sm sm:text-base text-gray-700 mb-5"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.7, delay: 0.4 }}
