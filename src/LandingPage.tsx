@@ -311,11 +311,11 @@ const LandingPage = () => {
   ]
   function FullScreenImage({ image, onClose }) {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4">
-        <div className="relative w-full h-full max-w-6xl max-h-[90vh] bg-white rounded-lg overflow-hidden">
+      <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50">
+        <div className="relative w-full h-full">
           <button
             onClick={onClose}
-            className="absolute top-2 right-2 text-gray-800 hover:text-gray-600 transition-colors bg-white rounded-full p-1 z-10"
+            className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-10"
           >
             <X className="w-8 h-8" />
           </button>
@@ -323,13 +323,14 @@ const LandingPage = () => {
             <img
               src={image}
               alt="Full screen view"
-              className="w-full h-auto object-contain"
+              className="w-full h-full object-contain"
             />
           </div>
         </div>
       </div>
     )
   }
+  
 
   const connectivityData = [
     {
@@ -623,18 +624,18 @@ const LandingPage = () => {
               </AnimatedSection>
             </div>
             <div className="md:w-1/2">
-              <AnimatedSection delay={0.4}>
-                <div className="bg-white p-2 rounded-lg shadow-lg h-full">
-                  <img
-                    src={connectivityMap}
-                    alt="Evershine Amavi Location Map"
-                    className="w-full h-500px object-cover rounded-lg cursor-pointer"
-                    onClick={() => openFullScreenImage(connectivityMap)}
-                  />
-                </div>
-                <p className="text-sm text-gray-500 italic mt-2 text-right">*Image as per Google Maps</p>
-              </AnimatedSection>
-            </div>
+  <AnimatedSection delay={0.4}>
+    <div className="bg-white p-2 rounded-lg shadow-lg h-full">
+      <img
+        src={connectivityMap}
+        alt="Evershine Amavi Location Map"
+        className="w-full h-auto object-cover rounded-lg cursor-pointer"
+        onClick={() => openFullScreenImage(connectivityMap)}
+      />
+    </div>
+    <p className="text-sm text-gray-500 italic mt-2 text-right">*Image as per Google Maps</p>
+  </AnimatedSection>
+</div>
           </div>
         </div>
       </section>
@@ -798,11 +799,11 @@ const LandingPage = () => {
       <ContactPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} title={popupTitle} />
       <DisclaimerPopup isOpen={isDisclaimerOpen} onClose={() => setIsDisclaimerOpen(false)} />
       {isFullScreenOpen && (
-        <FullScreenImage
-          image={fullScreenImage}
-          onClose={() => setIsFullScreenOpen(false)}
-        />
-      )}
+  <FullScreenImage
+    image={fullScreenImage}
+    onClose={() => setIsFullScreenOpen(false)}
+  />
+)}
     </div>
   )
 }
