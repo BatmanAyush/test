@@ -312,18 +312,20 @@ const LandingPage = () => {
   function FullScreenImage({ image, onClose }) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4">
-        <div className="relative max-w-4xl w-full bg-white rounded-lg overflow-hidden">
+        <div className="relative w-full h-full max-w-6xl max-h-[90vh] bg-white rounded-lg overflow-hidden">
           <button
             onClick={onClose}
-            className="absolute top-2 right-2 text-gray-800 hover:text-gray-600 transition-colors bg-white rounded-full p-1"
+            className="absolute top-2 right-2 text-gray-800 hover:text-gray-600 transition-colors bg-white rounded-full p-1 z-10"
           >
             <X className="w-8 h-8" />
           </button>
-          <img
-            src={image}
-            alt="Full screen view"
-            className="w-full h-auto"
-          />
+          <div className="w-full h-full overflow-auto">
+            <img
+              src={image}
+              alt="Full screen view"
+              className="w-full h-auto object-contain"
+            />
+          </div>
         </div>
       </div>
     )
