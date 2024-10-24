@@ -15,7 +15,7 @@ import qrCode3 from './Eevershine-Amavi-Phase-3.webp'
 import ContactPopup from './ContactUsPopup'
 import GallerySection from './GallerySection'
 import DisclaimerPopup from './DisclaimerPopup'
-import connectivityMap from './WhatsApp Image 2024-10-21 at 17.59.17.jpeg'
+import connectivityMap from './Evershine location map.jpg'
 
 interface AnimatedSectionProps {
   children: ReactNode
