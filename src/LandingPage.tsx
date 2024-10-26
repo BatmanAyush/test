@@ -216,7 +216,7 @@ const handleSubmit = async (e) => {
   }
 
   try {
-    const response = await fetch('http://localhost:8080/addRow', {
+    const response = await fetch('http://20.40.55.112:8080/addRow', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
