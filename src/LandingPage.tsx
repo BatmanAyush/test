@@ -202,6 +202,42 @@ const LandingPage = () => {
   const connectivityRef = useRef(null)
   const [isFullScreenOpen, setIsFullScreenOpen] = useState(false)
   const [fullScreenImage, setFullScreenImage] = useState('')
+  const [name, setName] = useState('')
+const [mobile, setMobile] = useState('')
+const [email, setEmail] = useState('')
+
+const handleSubmit = async (e) => {
+  e.preventDefault()
+
+  const data = {
+    name,
+    phone: mobile,
+    email,
+  }
+
+  try {
+    const response = await fetch('http://localhost:8080/addRow', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+
+    if (response.ok) {
+      alert('Data added successfully!')
+      setName('')
+      setMobile('')
+      setEmail('')
+    } else {
+      alert('Failed to add data.')
+    }
+  } catch (error) {
+    console.error('Error:', error)
+    alert('An error occurred while adding data.')
+  }
+}
+
 
   const openFullScreenImage = (image: string) => {
     setFullScreenImage(image)
@@ -692,58 +728,87 @@ const LandingPage = () => {
       </section>
 
       <section ref={contactUsRef} className="py-20 px-4 md:px-0 bg-gradient-to-b from-orange-100 to-orange-200 text-gray-800">
-        <div className="container mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-4 text-orange-600">CONTACT US</h2>
-          <p className="text-center text-lg mb-12 max-w-2xl mx-auto">
-            Get in touch with us to learn more about our projects or to schedule a visit to our sample flat.
-          </p>
-          <div className="flex flex-col md:flex-row gap-8">
-            <div className="md:w-1/2">
-              <div className="bg-white p-8 rounded-lg shadow-lg border border-orange-300">
-                <form className="space-y-4">
-                  <div>
-                    <label htmlFor="name" className="block text-lg font-medium text-gray-700">Name</label>
-                    <input type="text" id="name" name="name" className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
-                  </div>
-                  <div>
-                    <label htmlFor="mobile" className="block text-lg font-medium text-gray-700">Mobile</label>
-                    <input type="tel" id="mobile" name="mobile" className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-lg font-medium text-gray-700">Email</label>
-                    <input type="email" id="email" name="email" className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
-                  </div>
-                  <div>
-                    <button type="submit" className="w-full bg-orange-500 text-white py-2 px-4 rounded-md font-semibold hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
-                      Submit
-                    </button>
-                  </div>
-                </form>
-              </div>
-              <div className="mt-8 text-center">
-                <p className="text-lg font-semibold mb-2">Site Address</p>
-                <p className="text-orange-600 mt-1 mb-3">Evershine Global City, Avenue I1, Virar (West), Maharashtra 401303</p>
-                <p>+91 8828309719 / +91 9096669171</p>
-              </div>
+  <div className="container mx-auto">
+    <h2 className="text-4xl font-bold text-center mb-4 text-orange-600">CONTACT US</h2>
+    <p className="text-center text-lg mb-12 max-w-2xl mx-auto">
+      Get in touch with us to learn more about our projects or to schedule a visit to our sample flat.
+    </p>
+    <div className="flex flex-col md:flex-row gap-8">
+      <div className="md:w-1/2">
+        <div className="bg-white p-8 rounded-lg shadow-lg border border-orange-300">
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="name" className="block text-lg font-medium text-gray-700">Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50"
+                required
+              />
             </div>
-            <div className="md:w-1/2">
-              <div className="bg-white p-2 rounded-lg shadow-lg h-full">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3812603.289104417!2d70.06668495000002!3d21.062858779307554!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7a9017646de67%3A0x8a68bd52908884e9!2sEvershine%20Amavi%20303!5e0!3m2!1sen!2sin!4v1728989322507!5m2!1sen!2sin"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0, minHeight: '400px' }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Evershine Amavi Location"
-                  className="rounded-lg"
-                ></iframe>
-              </div>
+            <div>
+              <label htmlFor="mobile" className="block text-lg font-medium text-gray-700">Mobile</label>
+              <input
+                type="tel"
+                id="mobile"
+                name="mobile"
+                value={mobile}
+                onChange={(e) => setMobile(e.target.value)}
+                className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50"
+                required
+                maxLength={10}
+              />
             </div>
-          </div>
+            <div>
+              <label htmlFor="email" className="block text-lg font-medium text-gray-700">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50"
+                required
+              />
+            </div>
+            <div>
+              <button
+                type="submit"
+                className="w-full bg-orange-500 text-white py-2 px-4 rounded-md font-semibold hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
         </div>
-      </section>
+        <div className="mt-8 text-center">
+          <p className="text-lg font-semibold mb-2">Site Address</p>
+          <p className="text-orange-600 mt-1 mb-3">Evershine Global City, Avenue I1, Virar (West), Maharashtra 401303</p>
+          <p>+91 8828309719 / +91 9096669171</p>
+        </div>
+      </div>
+      <div className="md:w-1/2">
+        <div className="bg-white p-2 rounded-lg shadow-lg h-full">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3812603.289104417!2d70.06668495000002!3d21.062858779307554!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7a9017646de67%3A0x8a68bd52908884e9!2sEvershine%20Amavi%20303!5e0!3m2!1sen!2sin!4v1728989322507!5m2!1sen!2sin"
+            width="100%"
+            height="100%"
+            style={{ border: 0, minHeight: '400px' }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title="Evershine Amavi Location"
+            className="rounded-lg"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
       <footer className="bg-white text-gray-800 py-8">
         <div className="container mx-auto px-4 md:px-6">

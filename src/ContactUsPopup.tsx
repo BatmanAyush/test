@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
 
@@ -11,6 +11,46 @@ interface ContactPopupProps {
 }
 
 const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose, title }) => {
+  // State to manage form input values
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault() // Prevent page reload
+
+    const data = {
+      name,
+      email,
+      phone,
+    }
+
+    try {
+      const response = await fetch('http://localhost:8080/addRow', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      if (response.ok) {
+        alert('Data added successfully!')
+        // Clear the form fields after successful submission
+        setName('')
+        setEmail('')
+        setPhone('')
+        onClose() // Close the popup
+      } else {
+        alert('Failed to add data.')
+      }
+    } catch (error) {
+      console.error('Error:', error)
+      alert('An error occurred while adding data.')
+    }
+  }
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -35,7 +75,7 @@ const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose, title }) =
               <X className="w-8 h-8" />
             </button>
             <h2 className="text-4xl font-bold mb-8 text-orange-800 font-serif">{title}</h2>
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="name" className="block text-lg font-medium text-orange-700 mb-2">
                   Name
@@ -44,6 +84,8 @@ const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose, title }) =
                   type="text"
                   id="name"
                   name="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   className="block w-full rounded-lg border-orange-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50 text-lg py-3 px-4"
                   required
                 />
@@ -56,6 +98,8 @@ const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose, title }) =
                   type="email"
                   id="email"
                   name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="block w-full rounded-lg border-orange-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50 text-lg py-3 px-4"
                   required
                 />
@@ -68,6 +112,8 @@ const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose, title }) =
                   type="tel"
                   id="phone"
                   name="phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                   className="block w-full rounded-lg border-orange-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50 text-lg py-3 px-4"
                   required
                   maxLength={10}
