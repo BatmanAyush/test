@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
+
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
 
@@ -25,9 +26,9 @@ const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose, title }) =
       email,
       phone,
     }
-
+2
     try {
-      const response = await fetch('http://20.40.55.112:8080/addRow', {
+      const response = await fetch('https://springboot-sheets.onrender.com/api/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
