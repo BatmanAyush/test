@@ -3,7 +3,7 @@
 import React, { ReactNode, useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, useAnimation, useScroll } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { Trees, School, Users, Dumbbell, Waves, Utensils, LandPlot, Gamepad, Heart, ChevronDown, ChevronLeft, ChevronRight, Menu, Baby ,X} from 'lucide-react'
+import { Trees, School, Users, Dumbbell, Waves, Utensils, LandPlot, Gamepad, Heart, ChevronDown, ChevronLeft, ChevronRight, Menu, Baby ,X,Loader2} from 'lucide-react'
 import photo from './builder.jpg'
 import logo from './Evershine Builder logo 1200x1200-01(2).png'
 import logo2 from './Evershine Amavi-01 logo.png'
@@ -205,38 +205,52 @@ const LandingPage = () => {
   const [name, setName] = useState('')
 const [mobile, setMobile] = useState('')
 const [email, setEmail] = useState('')
+const [isLoading, setIsLoading] = useState(false)
+const [errors, setErrors] = useState<{ [key: string]: string }>({})
 
-const handleSubmit = async (e) => {
-  e.preventDefault()
-
-  const data = {
-    name,
-    phone: mobile,
-    email,
-  }
-
-  try {
-    const response = await fetch('https://springboot-sheets.onrender.com/api/add', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-
-    if (response.ok) {
-      alert('Data added successfully!')
-      setName('')
-      setMobile('')
-      setEmail('')
-    } else {
-      alert('Failed to add data.')
-    }
-  } catch (error) {
-    console.error('Error:', error)
-    alert('An error occurred while adding data.')
-  }
+const validateForm = () => {
+  const newErrors: { [key: string]: string } = {}
+  if (!name.trim()) newErrors.name = 'Name is required'
+  if (!mobile.trim()) newErrors.mobile = 'Mobile number is required'
+  if (mobile.trim().length !== 10) newErrors.mobile = 'Mobile number must be 10 digits'
+  if (!email.trim()) newErrors.email = 'Email is required'
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = 'Invalid email format'
+  setErrors(newErrors)
+  return Object.keys(newErrors).length === 0
 }
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!validateForm()) return
+
+    setIsLoading(true)
+    const data = { name, phone: mobile, email }
+
+    try {
+      const response = await fetch('https://springboot-sheets.onrender.com/api/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      if (response.ok) {
+        alert('Data added successfully!')
+        setName('')
+        setMobile('')
+        setEmail('')
+        setErrors({})
+      } else {
+        alert('Failed to add data.')
+      }
+    } catch (error) {
+      console.error('Error:', error)
+      alert('An error occurred while adding data.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
 
 
   const openFullScreenImage = (image: string) => {
@@ -736,53 +750,72 @@ const handleSubmit = async (e) => {
     <div className="flex flex-col md:flex-row gap-8">
       <div className="md:w-1/2">
         <div className="bg-white p-8 rounded-lg shadow-lg border border-orange-300">
-          <form className="space-y-4" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="name" className="block text-lg font-medium text-gray-700">Name</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="mobile" className="block text-lg font-medium text-gray-700">Mobile</label>
-              <input
-                type="tel"
-                id="mobile"
-                name="mobile"
-                value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
-                className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50"
-                required
-                maxLength={10}
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="block text-lg font-medium text-gray-700">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50"
-                required
-              />
-            </div>
-            <div>
-              <button
-                type="submit"
-                className="w-full bg-orange-500 text-white py-2 px-4 rounded-md font-semibold hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
-              >
-                Submit
-              </button>
-            </div>
-          </form>
+        <form className="space-y-4" onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="name" className="block text-lg font-medium text-gray-700">Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className={`mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50 ${
+              errors.name ? 'border-red-500' : ''
+            }`}
+            required
+          />
+          {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
+        </div>
+        <div>
+          <label htmlFor="mobile" className="block text-lg font-medium text-gray-700">Mobile</label>
+          <input
+            type="tel"
+            id="mobile"
+            name="mobile"
+            value={mobile}
+            onChange={(e) => setMobile(e.target.value)}
+            className={`mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50 ${
+              errors.mobile ? 'border-red-500' : ''
+            }`}
+            required
+            maxLength={10}
+          />
+          {errors.mobile && <p className="mt-1 text-sm text-red-500">{errors.mobile}</p>}
+        </div>
+        <div>
+          <label htmlFor="email" className="block text-lg font-medium text-gray-700">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={`mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50 ${
+              errors.email ? 'border-red-500' : ''
+            }`}
+            required
+          />
+          {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
+        </div>
+        <div>
+          <motion.button
+            type="submit"
+            className="w-full bg-orange-500 text-white py-2 px-4 rounded-md font-semibold hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 flex items-center justify-center"
+            disabled={isLoading}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="animate-spin mr-2" />
+                Submitting...
+              </>
+            ) : (
+              'Submit'
+            )}
+          </motion.button>
+        </div>
+      </form>
         </div>
         <div className="mt-8 text-center">
           <p className="text-lg font-semibold mb-2">Site Address</p>

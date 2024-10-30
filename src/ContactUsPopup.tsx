@@ -1,9 +1,8 @@
 'use client'
 
-
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X } from 'lucide-react'
+import { X, Loader2 } from 'lucide-react'
 
 interface ContactPopupProps {
   isOpen: boolean
@@ -12,21 +11,32 @@ interface ContactPopupProps {
 }
 
 const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose, title }) => {
-  // State to manage form input values
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [errors, setErrors] = useState<{ [key: string]: string }>({})
 
-  // Handle form submission
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {}
+    if (!name.trim()) newErrors.name = 'Name is required'
+    if (!email.trim()) newErrors.email = 'Email is required'
+    if (!phone.trim()) newErrors.phone = 'Phone is required'
+    if (phone.trim().length !== 10) newErrors.phone = 'Phone number must be 10 digits'
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = 'Invalid email format'
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault() // Prevent page reload
+    e.preventDefault()
 
-    const data = {
-      name,
-      email,
-      phone,
-    }
-2
+    if (!validateForm()) return
+
+    setIsLoading(true)
+
+    const data = { name, email, phone }
+
     try {
       const response = await fetch('https://springboot-sheets.onrender.com/api/add', {
         method: 'POST',
@@ -38,17 +48,18 @@ const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose, title }) =
 
       if (response.ok) {
         alert('Data added successfully!')
-        // Clear the form fields after successful submission
         setName('')
         setEmail('')
         setPhone('')
-        onClose() // Close the popup
+        onClose()
       } else {
         alert('Failed to add data.')
       }
     } catch (error) {
       console.error('Error:', error)
       alert('An error occurred while adding data.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -87,9 +98,12 @@ const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose, title }) =
                   name="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="block w-full rounded-lg border-orange-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50 text-lg py-3 px-4"
+                  className={`block w-full rounded-lg border-orange-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50 text-lg py-3 px-4 ${
+                    errors.name ? 'border-red-500' : ''
+                  }`}
                   required
                 />
+                {errors.name && <p className="mt-1 text-red-500">{errors.name}</p>}
               </div>
               <div>
                 <label htmlFor="email" className="block text-lg font-medium text-orange-700 mb-2">
@@ -101,9 +115,12 @@ const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose, title }) =
                   name="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full rounded-lg border-orange-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50 text-lg py-3 px-4"
+                  className={`block w-full rounded-lg border-orange-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50 text-lg py-3 px-4 ${
+                    errors.email ? 'border-red-500' : ''
+                  }`}
                   required
                 />
+                {errors.email && <p className="mt-1 text-red-500">{errors.email}</p>}
               </div>
               <div>
                 <label htmlFor="phone" className="block text-lg font-medium text-orange-700 mb-2">
@@ -115,17 +132,28 @@ const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose, title }) =
                   name="phone"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="block w-full rounded-lg border-orange-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50 text-lg py-3 px-4"
+                  className={`block w-full rounded-lg border-orange-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50 text-lg py-3 px-4 ${
+                    errors.phone ? 'border-red-500' : ''
+                  }`}
                   required
                   maxLength={10}
                 />
+                {errors.phone && <p className="mt-1 text-red-500">{errors.phone}</p>}
               </div>
               <div>
                 <button
                   type="submit"
-                  className="w-full bg-orange-600 text-white py-3 px-6 rounded-lg font-bold text-xl hover:bg-orange-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 shadow-lg hover:shadow-xl transform hover:scale-105 transition-transform"
+                  className="w-full bg-orange-600 text-white py-3 px-6 rounded-lg font-bold text-xl hover:bg-orange-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 shadow-lg hover:shadow-xl transform hover:scale-105 transition-transform flex items-center justify-center"
+                  disabled={isLoading}
                 >
-                  Submit
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="animate-spin mr-2" />
+                      Submitting...
+                    </>
+                  ) : (
+                    'Submit'
+                  )}
                 </button>
               </div>
             </form>
