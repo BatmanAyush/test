@@ -22,7 +22,7 @@ interface AnimatedSectionProps {
   delay?: number
 }
 
-const AnimatedSection: React.FC<AnimatedSectionProps> = ({ children, delay = 0 }) => {
+const AnimatedSection: React.FC<AnimatedSectionProps> = ({ children, delay }) => {
   const controls = useAnimation()
   const [ref, inView] = useInView({
     triggerOnce: true,
