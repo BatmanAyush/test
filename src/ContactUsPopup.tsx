@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Loader2 } from 'lucide-react'
 
@@ -14,8 +14,28 @@ const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose, title }) =
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
+  const [utmParams, setUtmParams] = useState<any>({})
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
+
+  // Extract UTM parameters from the URL on component mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const utmData = {
+      utmCampaign: urlParams.get('utm_campaign') || '',
+      utmSource: urlParams.get('utm_source') || '',
+      utmTerm: urlParams.get('utm_term') || '',
+      utmPlacement: urlParams.get('utm_placement') || '',
+      utmDevice: urlParams.get('utm_device') || '',
+      utmMedium: urlParams.get('utm_medium') || '',
+      utmSubsource: urlParams.get('utm_subsource') || '',
+      utmGclid: urlParams.get('utm_gclid') || '',
+      utmAdGroup: urlParams.get('utm_adgroup') || '',
+      utmAd: urlParams.get('utm_ad') || '',
+      utmChannel: urlParams.get('utm_channel') || '',
+    }
+    setUtmParams(utmData)
+  }, [])
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {}
@@ -35,10 +55,17 @@ const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose, title }) =
 
     setIsLoading(true)
 
-    const data = { name, email, phone }
+    const data = {
+      name,
+      email,
+      phone,
+      createdDateTime: new Date().toISOString(),
+      source: 'website', // assuming "website" as the source
+      ...utmParams,
+    }
 
     try {
-      const response = await fetch('https://springboot-sheets.onrender.com/api/add', {
+      const response = await fetch('http://localhost:8080/api/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
