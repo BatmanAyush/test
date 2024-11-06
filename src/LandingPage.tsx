@@ -683,7 +683,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         onClick={() => openFullScreenImage(connectivityMap)}
       />
     </div>
-    <p className="text-sm text-gray-500 italic mt-2 text-right">*Image as per Google Maps</p>
+    <p className="text-sm text-gray-500 italic mt-2 text-right">*Image as per Google Map</p>
   </AnimatedSection>
 </div>
           </div>
