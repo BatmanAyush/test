@@ -1,5 +1,5 @@
 'use client'
-
+import { useNavigate } from 'react-router-dom'
 import React, { ReactNode, useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, useAnimation, useScroll } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
@@ -186,7 +186,6 @@ const AnimatedCounter = ({ end, duration = 2 }) => {
 
 const LandingPage = () => {
   const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false)
-
   const [popupTitle, setPopupTitle] = useState('')
   const [isPopupOpen, setIsPopupOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
@@ -203,55 +202,88 @@ const LandingPage = () => {
   const [isFullScreenOpen, setIsFullScreenOpen] = useState(false)
   const [fullScreenImage, setFullScreenImage] = useState('')
   const [name, setName] = useState('')
-const [mobile, setMobile] = useState('')
+const [phone, setPhone] = useState('')
 const [email, setEmail] = useState('')
+const [utmParams, setUtmParams] = useState<any>({})
 const [isLoading, setIsLoading] = useState(false)
 const [errors, setErrors] = useState<{ [key: string]: string }>({})
+const navigate = useNavigate();
+
+useEffect(() => {
+  const urlParams = new URLSearchParams(window.location.search)
+  const utmData = {
+    utmCampaign: urlParams.get('UTM_Campaign') || '',
+    utmSource: urlParams.get('UTM_Source') || '',
+    utmTerm: urlParams.get('UTM_Term') || '',
+    utmPlacement: urlParams.get('UTM_Placement') || '',
+    utmDevice: urlParams.get('UTM_Device') || '',
+    utmMedium: urlParams.get('UTM_Medium') || '',
+    utmSubsource: urlParams.get('UTM_Subsource') || '',
+    utmGclid: urlParams.get('UTM_GCLID') || '',
+    utmAdGroup: urlParams.get('UTM_Ad_Group') || '',
+    utmAd: urlParams.get('UTM_Ad') || '',
+    utmChannel: urlParams.get('UTM_Channel') || '',
+  }
+  console.log('UTM Parameters:', utmData);
+  setUtmParams(utmData)
+}, [])
 
 const validateForm = () => {
   const newErrors: { [key: string]: string } = {}
   if (!name.trim()) newErrors.name = 'Name is required'
-  if (!mobile.trim()) newErrors.mobile = 'Mobile number is required'
-  if (mobile.trim().length !== 10) newErrors.mobile = 'Mobile number must be 10 digits'
+  if (!phone.trim()) newErrors.mobile = 'Mobile number is required'
+  if (phone.trim().length !== 10) newErrors.mobile = 'Mobile number must be 10 digits'
   if (!email.trim()) newErrors.email = 'Email is required'
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = 'Invalid email format'
   setErrors(newErrors)
   return Object.keys(newErrors).length === 0
 }
+const onClose = () => {
+  setIsPopupOpen(false);
+  setIsDisclaimerOpen(false);
+  setIsFullScreenOpen(false);
+};
 const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (!validateForm()) return
+  e.preventDefault()
 
-    setIsLoading(true)
-    const data = { name, phone: mobile, email }
+  if (!validateForm()) return
 
-    try {
-      const response = await fetch('https://springboot-sheets.onrender.com/api/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
+  setIsLoading(true)
 
-      if (response.ok) {
-        alert('Data added successfully!')
-        setName('')
-        setMobile('')
-        setEmail('')
-        setErrors({})
-      } else {
-        alert('Failed to add data.')
-      }
-    } catch (error) {
-      console.error('Error:', error)
-      alert('An error occurred while adding data.')
-    } finally {
-      setIsLoading(false)
-    }
+  const data = {
+    name,
+    email,
+    phone,
+    createdDateTime: new Date().toISOString(),
+    source: 'website',
+    ...utmParams,
   }
+ console.log('Data to be sent:', data);
+  try {
+    const response = await fetch('https://springboot-sheets.onrender.com/api/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
 
-
+    if (response.ok) {
+    navigate('/thankyou')
+      setName('')
+      setEmail('')
+      setPhone('')
+      onClose()
+    } else {
+      alert('Failed to add data.')
+    }
+  } catch (error) {
+    console.error('Error:', error)
+    alert('An error occurred while adding data.')
+  } finally {
+    setIsLoading(false)
+  }
+}
 
   const openFullScreenImage = (image: string) => {
     setFullScreenImage(image)
@@ -767,13 +799,13 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
           {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
         </div>
         <div>
-          <label htmlFor="mobile" className="block text-lg font-medium text-gray-700">Mobile</label>
+          <label htmlFor="phone" className="block text-lg font-medium text-gray-700">Mobile</label>
           <input
             type="tel"
-            id="mobile"
-            name="mobile"
-            value={mobile}
-            onChange={(e) => setMobile(e.target.value)}
+            id="phone"
+            name="phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
             className={`mt-1 block w-full rounded-md bg-orange-50 border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50 ${
               errors.mobile ? 'border-red-500' : ''
             }`}
@@ -891,7 +923,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
-        Enquire Nowss
+        Enquire Now
       </motion.button>
 
       <ContactPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} title={popupTitle} />

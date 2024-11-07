@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Loader2 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 interface ContactPopupProps {
   isOpen: boolean
@@ -17,22 +18,23 @@ const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose, title }) =
   const [utmParams, setUtmParams] = useState<any>({})
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
+  const navigate = useNavigate();
 
   // Extract UTM parameters from the URL on component mount
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search)
     const utmData = {
-      utmCampaign: urlParams.get('utm_campaign') || '',
-      utmSource: urlParams.get('utm_source') || '',
-      utmTerm: urlParams.get('utm_term') || '',
-      utmPlacement: urlParams.get('utm_placement') || '',
-      utmDevice: urlParams.get('utm_device') || '',
-      utmMedium: urlParams.get('utm_medium') || '',
-      utmSubsource: urlParams.get('utm_subsource') || '',
-      utmGclid: urlParams.get('utm_gclid') || '',
-      utmAdGroup: urlParams.get('utm_adgroup') || '',
-      utmAd: urlParams.get('utm_ad') || '',
-      utmChannel: urlParams.get('utm_channel') || '',
+      utmCampaign: urlParams.get('UTM_Campaign') || '',
+      utmSource: urlParams.get('UTM_Source') || '',
+      utmTerm: urlParams.get('UTM_Term') || '',
+      utmPlacement: urlParams.get('UTM_Placement') || '',
+      utmDevice: urlParams.get('UTM_Device') || '',
+      utmMedium: urlParams.get('UTM_Medium') || '',
+      utmSubsource: urlParams.get('UTM_Subsource') || '',
+      utmGclid: urlParams.get('UTM_GCLID') || '',
+      utmAdGroup: urlParams.get('UTM_Ad_Group') || '',
+      utmAd: urlParams.get('UTM_Ad') || '',
+      utmChannel: urlParams.get('UTM_Channel') || '',
     }
     setUtmParams(utmData)
   }, [])
@@ -65,7 +67,7 @@ const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose, title }) =
     }
 
     try {
-      const response = await fetch('http://localhost:8080/api/add', {
+      const response = await fetch('https://springboot-sheets.onrender.com/api/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -74,7 +76,7 @@ const ContactPopup: React.FC<ContactPopupProps> = ({ isOpen, onClose, title }) =
       })
 
       if (response.ok) {
-        alert('Data added successfully!')
+    navigate('/thankyou')
         setName('')
         setEmail('')
         setPhone('')

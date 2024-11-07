@@ -2,8 +2,8 @@
 
 import  { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft, ChevronRight, X } from 'lucide-react'
-
+import { ChevronLeft, ChevronRight, X ,Loader2} from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 // Import your images here
 import exterior1 from './builder.jpg'
 import exterior2 from './Elevation Warm (1).jpg'
@@ -23,6 +23,7 @@ const sections = [
 ]
 
 export default function GallerySection() {
+
   const [activeSection, setActiveSection] = useState(0)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [direction, setDirection] = useState(1)
@@ -259,6 +260,85 @@ export default function GallerySection() {
 }
 
 function ImagePopup({ isOpen, onClose, image, sectionName }) {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [utmParams, setUtmParams] = useState<any>({})
+  const [isLoading, setIsLoading] = useState(false)
+  const [errors, setErrors] = useState<{ [key: string]: string }>({})
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const utmData = {
+      utmCampaign: urlParams.get('UTM_Campaign') || '',
+      utmSource: urlParams.get('UTM_Source') || '',
+      utmTerm: urlParams.get('UTM_Term') || '',
+      utmPlacement: urlParams.get('UTM_Placement') || '',
+      utmDevice: urlParams.get('UTM_Device') || '',
+      utmMedium: urlParams.get('UTM_Medium') || '',
+      utmSubsource: urlParams.get('UTM_Subsource') || '',
+      utmGclid: urlParams.get('UTM_GCLID') || '',
+      utmAdGroup: urlParams.get('UTM_Ad_Group') || '',
+      utmAd: urlParams.get('UTM_Ad') || '',
+      utmChannel: urlParams.get('UTM_Channel') || '',
+    }
+    setUtmParams(utmData)
+  }, [])
+
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {}
+    if (!name.trim()) newErrors.name = 'Name is required'
+    if (!email.trim()) newErrors.email = 'Email is required'
+    if (!phone.trim()) newErrors.phone = 'Phone is required'
+    if (phone.trim().length !== 10) newErrors.phone = 'Phone number must be 10 digits'
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = 'Invalid email format'
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    if (!validateForm()) return
+
+    setIsLoading(true)
+
+    const data = {
+      name,
+      email,
+      phone,
+      createdDateTime: new Date().toISOString(),
+      source: 'website',
+      ...utmParams,
+    }
+
+    try {
+      const response = await fetch('https://springboot-sheets.onrender.com/api/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      if (response.ok) {
+        navigate('/thankyou')
+        setName('')
+        setEmail('')
+        setPhone('')
+        onClose()
+      } else {
+        alert('Failed to add data.')
+      }
+    } catch (error) {
+      console.error('Error:', error)
+      alert('An error occurred while adding data.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full overflow-hidden">
@@ -271,21 +351,66 @@ function ImagePopup({ isOpen, onClose, image, sectionName }) {
           </div>
         </div>
         <div className="p-6">
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-              <input type="text" id="name" name="name" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50 ${
+                  errors.name ? 'border-red-500' : ''
+                }`}
+                required
+              />
+              {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
             </div>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-              <input type="email" id="email" name="email" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50 ${
+                  errors.email ? 'border-red-500' : ''
+                }`}
+                required
+              />
+              {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
             </div>
             <div>
               <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone</label>
-              <input type="tel" id="phone" name="phone" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50" required />
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-500 focus:ring-opacity-50 ${
+                  errors.phone ? 'border-red-500' : ''
+                }`}
+                required
+                maxLength={10}
+              />
+              {errors.phone && <p className="mt-1 text-sm text-red-500">{errors.phone}</p>}
             </div>
-            <button type="submit" className="w-full bg-orange-500 text-white py-3 px-4 rounded-md font-semibold hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
-              Register for More Information
+            <button
+              type="submit"
+              className="w-full bg-orange-500 text-white py-3 px-4 rounded-md font-semibold hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 flex items-center justify-center"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="animate-spin mr-2" />
+                  Submitting...
+                </>
+              ) : (
+                'Register for More Information'
+              )}
             </button>
           </form>
         </div>
@@ -293,7 +418,6 @@ function ImagePopup({ isOpen, onClose, image, sectionName }) {
     </div>
   )
 }
-
 function FullScreenImage({ image, onClose }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4">
