@@ -192,6 +192,7 @@ const LandingPage = () => {
   const contactUsRef = useRef<HTMLElement>(null)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isHeaderVisible, setIsHeaderVisible] = useState(true)
+  const [source,setSource]=useState('Website');
   const { scrollY } = useScroll()
   const headerRef = useRef<HTMLElement>(null)
   const aboutUsRef = useRef(null)
@@ -254,8 +255,8 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     name,
     email,
     phone,
-    createdDateTime: new Date().toISOString(),
-    source: 'website',
+    createdDateTime: new Date(new Date().getTime() + 5.5 * 60 * 60 * 1000).toISOString(),
+    source: 'ContactUs',
     ...utmParams,
   }
  console.log('Data to be sent:', data);
@@ -344,7 +345,8 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsPopupOpen(true)
-      setPopupTitle('Welcome to Evershine Amavi')
+      setPopupTitle('Welcome to Evershine Amavi 303')
+      setSource('Welcome');
     }, 5000)
 
     return () => clearTimeout(timer)
@@ -363,9 +365,11 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     }
   }
 
-  const openPopup = (title: string) => {
+  const openPopup = (title: string,source: string) => {
     setPopupTitle(title)
     setIsPopupOpen(true)
+    setSource(source);
+
   }
 
   const toggleMenu = () => {
@@ -373,7 +377,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   }
  
   const amenities = [
-    { name: "Yazo Park", icon: Trees },
+    { name: "Yazoo Park", icon: Trees },
     { name: "Cambridge International School", icon: School },
     { name: "Clubhouse", icon: Users },
     { name: "Gymnasium", icon: Dumbbell },
@@ -483,8 +487,8 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     {
       title: "Fast Food Restaurants",
       items: [
-        { name: "Dominos pizza", distance: "2.2km", time: "7mins" },
-        { name: "McDonald's", distance: "1.5km", time: "5mins" },
+        { name: "Dominos pizza", distance: "750 mtrs", time: "10mins" },
+        { name: "McDonald's", distance: "1.1km", time: "15mins" },
       ]
     },
   ]
@@ -643,7 +647,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                     <td className="py-4 px-6 border-r border-orange-200 text-center">{config.area}</td>
                     <td className="py-4 px-6 text-center">
                       <motion.button
-                        onClick={() => openPopup('Check Price')}
+                        onClick={() => openPopup('Check Price','Price')}
                         className="text-orange-500 hover:text-orange-600 font-semibold transition-colors duration-300"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -755,7 +759,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                 whileHover={{ scale: 1.05 }}
                 transition={{ type: "spring", stiffness: 300, duration: 0.3 }}
               >
-                <AnimatedCounter end={20000} duration={2} />
+                <AnimatedCounter end={60000} duration={2} />
                 <p className="text-base text-gray-600 text-center mt-4">Happy Families</p>
               </motion.div>
             </AnimatedSection>
@@ -911,7 +915,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       </footer>
       <motion.button
         className="fixed bottom-4 left-4 bg-orange-500 text-white px-4 py-2 rounded-md shadow-lg hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 z-50 font-semibold"
-        onClick={() => openPopup('Download Brochure')}
+        onClick={() => openPopup('Download Brochure','Download')}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -919,14 +923,14 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       </motion.button>
       <motion.button
         className="fixed bottom-4 right-4 bg-orange-500 text-white px-4 py-2 rounded-md shadow-lg hover:bg-orange-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 z-50 font-semibold"
-        onClick={() => openPopup('Enquire Now')}
+        onClick={() => openPopup('Enquire Now','Enquire')}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
         Enquire Now
       </motion.button>
 
-      <ContactPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} title={popupTitle} />
+      <ContactPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} title={popupTitle} source={source} />
       <DisclaimerPopup isOpen={isDisclaimerOpen} onClose={() => setIsDisclaimerOpen(false)} />
       {isFullScreenOpen && (
   <FullScreenImage
