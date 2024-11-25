@@ -1,34 +1,11 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LandingPage from './LandingPage';
 import ThankYouPage from './ThankYouPage';
+import useGTMPageView from './useGTMPageView'; // Import the custom hook
 
-// Custom Hook for GTM Page View Tracking
-const useGTMPageView = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    if (window.dataLayer) {
-      console.log('test')
-      
-      // Push the current page to GTM
-      window.dataLayer.push({
-        event: 'pageview',
-        page: {
-          title: document.title || 'Default Title', // Default title fallback
-          path: location.pathname,
-        },
-      });
-    }
-  }, [location]); // Trigger whenever the route changes
-};
-
-// Main App Component
 const App = () => {
   return (
     <Router>
-      {/* Wrap Routes in a context for GTM Page View Tracking */}
       <PageViewTracker>
         <Routes>
           <Route path="/" element={<LandingPage />} />
@@ -39,9 +16,8 @@ const App = () => {
   );
 };
 
-// A wrapper to track page views
 const PageViewTracker: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  useGTMPageView(); // Call the custom hook inside the Router context
+  useGTMPageView(); // Apply the hook to track page views
   return <>{children}</>;
 };
 
