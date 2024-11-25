@@ -9,6 +9,7 @@ const useGTMPageView = () => {
     console.log('Sending pageview:', location.pathname);
 
     if (window.dataLayer) {
+      console.log('test')
       console.log('Sending pageview to GTM:', location.pathname);
 
       // Push a pageview event to the GTM dataLayer
